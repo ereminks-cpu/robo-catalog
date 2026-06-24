@@ -1,9 +1,10 @@
-# ROBO Catalog v5.2
+# ROBO Catalog v6.0 — Supabase Admin
 
-Добавлены сводные колонки в основной таблице:
-- Характеристики
-- Навигация
-- Станция
-- ROBO-Аналитика
+Перед загрузкой сайта выполни `supabase_policies.sql` в SQL Editor.
 
-Данные отображаются компактно в несколько строк. Подробности доступны в карточке робота и во всплывающей подсказке при наведении.
+Заменить на GitHub:
+- index.html
+- style.css
+- README.md
+
+Supabase URL: https://pwnpxxhrhxrtcxmcofcc.supabase.co
