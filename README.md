@@ -1,10 +1,13 @@
-# ROBO Catalog v6.0 — Supabase Admin
+# ROBO Catalog v6.2 — Supabase Name Fix
 
-Перед загрузкой сайта выполни `supabase_policies.sql` в SQL Editor.
+Исправлена ошибка JavaScript:
+`Identifier 'supabase' has already been declared`.
 
 Заменить на GitHub:
 - index.html
 - style.css
 - README.md
 
-Supabase URL: https://pwnpxxhrhxrtcxmcofcc.supabase.co
+После публикации сделать жесткое обновление страницы:
+- Mac: Cmd + Shift + R
+- Windows: Ctrl + F5
