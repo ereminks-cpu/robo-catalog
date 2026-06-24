@@ -30,12 +30,13 @@
 <th data-sort="type">Тип <span class="sortMark"></span></th>
 <th data-sort="purpose">Назначение <span class="sortMark"></span></th>
 <th data-sort="subtype">Подтип <span class="sortMark"></span></th>
+<th data-sort="completion">Заполненность <span class="sortMark"></span></th>
 </tr></thead><tbody id="body"></tbody></table></main>
 
 <div id="card" class="card">
  <div class="panel">
   <button class="close" onclick="closeCard()">×</button>
-  <h2 id="cardTitle"></h2>
+  <h2 id="cardTitle"></h2><div id="cardCompletion" class="cardCompletion"></div>
   <div class="tabs">
     <button data-tab="passport" class="active">1. Паспорт</button>
     <button data-tab="tech">2. Характеристики</button>
@@ -88,10 +89,24 @@ const body=document.getElementById('body'), q=document.getElementById('q'), m=do
 function rebuildManufacturerCountries(){robots.forEach(r=>{if(r.manufacturer && r.country) manufacturerCountries[r.manufacturer]=r.country;})}
 function uniq(k){return [...new Set(robots.map(x=>x[k]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ru'))}
 function refill(){rebuildManufacturerCountries(); const oldM=m.value, oldS=s.value;m.innerHTML='<option value="">Все производители</option>';s.innerHTML='<option value="">Все подтипы</option>';uniq('manufacturer').forEach(v=>m.add(new Option(v,v)));uniq('subtype').forEach(v=>s.add(new Option(v,v)));m.value=oldM;s.value=oldS}
+
+function isFilledValue(v){return v!==undefined&&v!==null&&String(v).trim()!==''}
+const completionGroups={
+  passport:['manufacturer','country','model','type','purpose','subtype','status','link'],
+  tech:['cleaningWidth','productivity','cleanWater','dirtyWater','wasteContainer','weight','length','widthSize','height','sweeping','vacuum','wetCleaning','flatDryWaste','pad','brushType'],
+  nav:['navigationType','safetyBumper','crowdWork','elevatorIntegration','fmsRobo'],
+  station:['chargingStation','dock3in1'],
+  analytics:['roboRating','objTransportHub','objBusinessGallery','objResidentialLobby','objCulture','objEducation','objOffice','objIndustrial','objWarehouse','objFoodservice','objRetail','objParking','roboComment']
+};
+function completionFieldFilled(r,k){if(['sweeping','vacuum','wetCleaning','flatDryWaste','pad','safetyBumper'].includes(k))return r[k]===true;return isFilledValue(r[k])}
+function completionGroup(r,g){const a=completionGroups[g];return Math.round(a.filter(k=>completionFieldFilled(r,k)).length/a.length*100)}
+function completionTotal(r){const a=Object.values(completionGroups).flat();return Math.round(a.filter(k=>completionFieldFilled(r,k)).length/a.length*100)}
+function completionBadge(p){const c=p>=70?'good':p>=35?'mid':'bad';return `<div class="fillWrap"><span class="fillBadge ${c}">${p}%</span><div class="bar"><i class="${c}" style="width:${p}%"></i></div></div>`}
+
 function imageCell(id){const img=getImages()[id];return img?`<img class="thumb" src="${img}">`:`<div class="miniPlaceholder">Нет фото</div>`}
-function sortRows(rows){const images=getImages();const k=sortState.key, dir=sortState.dir==='asc'?1:-1;return [...rows].sort((a,b)=>{let av=k==='hasImage'?(images[a.id]?1:0):(a[k]||'');let bv=k==='hasImage'?(images[b.id]?1:0):(b[k]||'');if(typeof av==='number') return (av-bv)*dir; return String(av).localeCompare(String(bv),'ru',{numeric:true,sensitivity:'base'})*dir;})}
+function sortRows(rows){const images=getImages();const k=sortState.key, dir=sortState.dir==='asc'?1:-1;return [...rows].sort((a,b)=>{let av=k==='hasImage'?(images[a.id]?1:0):k==='completion'?completionTotal(a):(a[k]||'');let bv=k==='hasImage'?(images[b.id]?1:0):k==='completion'?completionTotal(b):(b[k]||'');if(typeof av==='number') return (av-bv)*dir; return String(av).localeCompare(String(bv),'ru',{numeric:true,sensitivity:'base'})*dir;})}
 function updateSortMarks(){document.querySelectorAll('th[data-sort]').forEach(th=>{const mark=th.querySelector('.sortMark');mark.textContent=th.dataset.sort===sortState.key?(sortState.dir==='asc'?'↑':'↓'):'↕';})}
-function render(){const text=q.value.toLowerCase();let rows=robots.filter(r=>(!text||Object.values(r).join(' ').toLowerCase().includes(text))&&(!m.value||r.manufacturer===m.value)&&(!s.value||r.subtype===s.value));rows=sortRows(rows);count.textContent=rows.length+' моделей';body.innerHTML=rows.map(r=>`<tr onclick="openCard('${r.id}')"><td>${imageCell(r.id)}</td><td>${r.id}</td><td><b>${r.manufacturer}</b></td><td>${r.country||''}</td><td>${r.model||''}</td><td>${r.type||''}</td><td>${r.purpose||''}</td><td><span>${r.subtype||''}</span></td></tr>`).join('');updateSortMarks();}
+function render(){const text=q.value.toLowerCase();let rows=robots.filter(r=>(!text||Object.values(r).join(' ').toLowerCase().includes(text))&&(!m.value||r.manufacturer===m.value)&&(!s.value||r.subtype===s.value));rows=sortRows(rows);count.textContent=rows.length+' моделей';body.innerHTML=rows.map(r=>`<tr onclick="openCard('${r.id}')"><td>${imageCell(r.id)}</td><td>${r.id}</td><td><b>${r.manufacturer}</b></td><td>${r.country||''}</td><td>${r.model||''}</td><td>${r.type||''}</td><td>${r.purpose||''}</td><td><span>${r.subtype||''}</span></td><td>${completionBadge(completionTotal(r))}</td></tr>`).join('');updateSortMarks();}
 [q,m,s].forEach(x=>x.addEventListener('input',render));
 document.querySelectorAll('th[data-sort]').forEach(th=>th.onclick=()=>{const key=th.dataset.sort;sortState=sortState.key===key?{key,dir:sortState.dir==='asc'?'desc':'asc'}:{key,dir:'asc'};setSort(sortState);render();});
 refill();render();
@@ -160,7 +175,7 @@ ${scoreField('objParking','Подземный паркинг',r)}
 </div><label class="wide"><span>Комментарий эксперта ROBO</span><textarea name="roboComment">${r.roboComment||''}</textarea></label>`}
 
 function openCard(id){currentId=id;currentTab='passport';drawCard();document.getElementById('card').classList.add('open')}
-function drawCard(){const r=robots.find(x=>x.id===currentId);if(!r)return;document.getElementById('cardTitle').textContent=`${r.manufacturer||'Новый производитель'} ${r.model||''}`;drawPhoto();document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===currentTab));const map={passport:tabPassport,tech:tabTech,nav:tabNav,station:tabStation,analytics:tabAnalytics};document.getElementById('tabContent').innerHTML=map[currentTab](r);bindDynamicFields();}
+function drawCard(){const r=robots.find(x=>x.id===currentId);if(!r)return;document.getElementById('cardTitle').textContent=`${r.manufacturer||'Новый производитель'} ${r.model||''}`;document.getElementById('cardCompletion').innerHTML=`Заполненность: ${completionBadge(completionTotal(r))} <span>Паспорт ${completionGroup(r,'passport')}%</span><span>ТТХ ${completionGroup(r,'tech')}%</span><span>Навигация ${completionGroup(r,'nav')}%</span><span>Станция ${completionGroup(r,'station')}%</span><span>ROBO ${completionGroup(r,'analytics')}%</span>`;drawPhoto();document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===currentTab));const map={passport:tabPassport,tech:tabTech,nav:tabNav,station:tabStation,analytics:tabAnalytics};document.getElementById('tabContent').innerHTML=map[currentTab](r);bindDynamicFields();}
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{saveCurrentForm(false);currentTab=b.dataset.tab;drawCard();});
 function closeCard(){saveCurrentForm(false);document.getElementById('card').classList.remove('open');currentId=null}
 function drawPhoto(){const img=getImages()[currentId];document.getElementById('cardPhoto').innerHTML=img?`<img src="${img}">`:'<div>Нет фото</div>'}
