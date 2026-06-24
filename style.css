@@ -1,20 +1,19 @@
 body{font-family:Arial,sans-serif;margin:0;background:#f6f7f9;color:#111827}
-header{display:flex;justify-content:space-between;gap:18px;background:#0f766e;color:white;padding:32px 44px}
-h1{margin:0 0 8px;font-size:36px}p{margin:0 0 12px}
-.controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;padding:20px 44px}
-input,select,button{padding:10px 12px;border:1px solid #ddd;border-radius:10px;font-size:14px;background:#fff}
-.image-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:0 44px 20px}
-.image-tools p{color:#667085;font-size:13px;width:100%}
-.importLabel{display:inline-block;background:white;border:1px solid #ddd;border-radius:10px;padding:10px 12px;cursor:pointer}.importLabel input{display:none}
-main{overflow:auto;padding:0 44px 44px}
-table{width:100%;border-collapse:collapse;background:white;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px #0001}
-th,td{padding:12px;border-bottom:1px solid #eee;text-align:left;font-size:14px;vertical-align:middle}
+header{display:flex;justify-content:space-between;gap:18px;background:#0f766e;color:white;padding:22px 36px}
+h1{margin:0 0 6px;font-size:30px}p{margin:0 0 8px}
+.controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;padding:16px 36px}
+input,select,button{padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fff}
+.image-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 36px 14px}.image-tools p{color:#667085;font-size:12px;width:100%}
+.importLabel{display:inline-block;background:white;border:1px solid #ddd;border-radius:8px;padding:8px 10px;cursor:pointer}.importLabel input{display:none}
+main{overflow:auto;padding:0 36px 36px}
+table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden;box-shadow:0 6px 20px #0001}
+th,td{padding:8px 10px;border-bottom:1px solid #eee;text-align:left;font-size:13px;vertical-align:middle}
 th{background:#eef2f7;position:sticky;top:0;z-index:2}
-td:first-child,th:first-child{width:150px}
+td:first-child,th:first-child{width:96px;min-width:96px}
 span{background:#e6fffb;color:#0f766e;padding:4px 8px;border-radius:999px;font-weight:bold;font-size:12px}
-.photoBox{width:130px;display:flex;flex-direction:column;align-items:center;gap:6px}
-.photoBox img{width:110px;height:82px;object-fit:contain;background:#f2f4f7;border-radius:10px;cursor:pointer;border:1px solid #e5e7eb}
-.placeholder{width:110px;height:82px;border:1px dashed #cbd5e1;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#94a3b8;background:#f8fafc}
-.photoBox label{font-size:12px;color:#0f766e;cursor:pointer}.photoBox label input{display:none}.photoBox button{font-size:12px;padding:5px 8px}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);align-items:center;justify-content:center;padding:40px;z-index:99}.modal.open{display:flex}.modal img{max-width:90vw;max-height:90vh;background:white;border-radius:16px}
-@media(max-width:800px){header{padding:24px;display:block}.controls{grid-template-columns:1fr;padding:16px}.image-tools{padding:0 16px 16px}main{padding:0 16px 32px}table{min-width:980px}}
+.photoBox{width:86px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.photoBox img{width:78px;height:54px;object-fit:contain;background:#f2f4f7;border-radius:8px;cursor:pointer;border:1px solid #e5e7eb}
+.placeholder{width:78px;height:54px;border:1px dashed #cbd5e1;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#94a3b8;background:#f8fafc;font-size:11px}
+.photoBox label{font-size:11px;color:#0f766e;cursor:pointer}.photoBox label input{display:none}.photoBox button{font-size:11px;padding:2px 6px;line-height:1}
+.photoActions{display:flex;gap:4px;align-items:center}.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);align-items:center;justify-content:center;padding:40px;z-index:99}.modal.open{display:flex}.modal img{max-width:90vw;max-height:90vh;background:white;border-radius:16px}
+@media(max-width:800px){header{padding:20px;display:block}.controls{grid-template-columns:1fr;padding:14px}.image-tools{padding:0 14px 14px}main{padding:0 14px 28px}table{min-width:980px}}
