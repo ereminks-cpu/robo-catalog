@@ -21,17 +21,16 @@
 <p>Клик по строке открывает карточку. Заголовки колонок сортируют таблицу. Правки сохраняются в браузере.</p>
 </section>
 
-<main><table><thead><tr>
-<th data-sort="hasImage">Фото <span class="sortMark"></span></th>
+<main><table><thead><tr><th data-sort="hasImage">Фото <span class="sortMark"></span></th>
 <th data-sort="id">ID <span class="sortMark"></span></th>
 <th data-sort="manufacturer">Производитель <span class="sortMark"></span></th>
-<th data-sort="country">Страна <span class="sortMark"></span></th>
 <th data-sort="model">Модель <span class="sortMark"></span></th>
-<th data-sort="type">Тип <span class="sortMark"></span></th>
-<th data-sort="purpose">Назначение <span class="sortMark"></span></th>
 <th data-sort="subtype">Подтип <span class="sortMark"></span></th>
-<th data-sort="completion">Заполненность <span class="sortMark"></span></th>
-</tr></thead><tbody id="body"></tbody></table></main>
+<th>Характеристики</th>
+<th>Навигация</th>
+<th>Станция</th>
+<th>ROBO-Аналитика</th>
+<th data-sort="completion">Заполненность <span class="sortMark"></span></th></tr></thead><tbody id="body"></tbody></table></main>
 
 <div id="card" class="card">
  <div class="panel">
@@ -106,7 +105,78 @@ function completionBadge(p){const c=p>=70?'good':p>=35?'mid':'bad';return `<div 
 function imageCell(id){const img=getImages()[id];return img?`<img class="thumb" src="${img}">`:`<div class="miniPlaceholder">Нет фото</div>`}
 function sortRows(rows){const images=getImages();const k=sortState.key, dir=sortState.dir==='asc'?1:-1;return [...rows].sort((a,b)=>{let av=k==='hasImage'?(images[a.id]?1:0):k==='completion'?completionTotal(a):(a[k]||'');let bv=k==='hasImage'?(images[b.id]?1:0):k==='completion'?completionTotal(b):(b[k]||'');if(typeof av==='number') return (av-bv)*dir; return String(av).localeCompare(String(bv),'ru',{numeric:true,sensitivity:'base'})*dir;})}
 function updateSortMarks(){document.querySelectorAll('th[data-sort]').forEach(th=>{const mark=th.querySelector('.sortMark');mark.textContent=th.dataset.sort===sortState.key?(sortState.dir==='asc'?'↑':'↓'):'↕';})}
-function render(){const text=q.value.toLowerCase();let rows=robots.filter(r=>(!text||Object.values(r).join(' ').toLowerCase().includes(text))&&(!m.value||r.manufacturer===m.value)&&(!s.value||r.subtype===s.value));rows=sortRows(rows);count.textContent=rows.length+' моделей';body.innerHTML=rows.map(r=>`<tr onclick="openCard('${r.id}')"><td>${imageCell(r.id)}</td><td>${r.id}</td><td><b>${r.manufacturer}</b></td><td>${r.country||''}</td><td>${r.model||''}</td><td>${r.type||''}</td><td>${r.purpose||''}</td><td><span>${r.subtype||''}</span></td><td>${completionBadge(completionTotal(r))}</td></tr>`).join('');updateSortMarks();}
+
+function val(v,suffix=''){return isFilledValue(v)?`${v}${suffix}`:'—'}
+function yes(v){return v==='Да'||v===true?'✓':(v==='Нет'?'—':(isFilledValue(v)?v:'—'))}
+function summaryTech(r){
+  const tank = (isFilledValue(r.cleanWater)||isFilledValue(r.dirtyWater)) ? `${r.cleanWater||'—'}/${r.dirtyWater||'—'} л` : '—';
+  const dims = (isFilledValue(r.length)||isFilledValue(r.widthSize)||isFilledValue(r.height)) ? `${r.length||'—'}×${r.widthSize||'—'}×${r.height||'—'} мм` : '';
+  const funcs = [];
+  if(r.sweeping) funcs.push('подмет.');
+  if(r.vacuum) funcs.push('вакуум');
+  if(r.wetCleaning) funcs.push('влажн.');
+  if(r.flatDryWaste) funcs.push('сух. мусор');
+  if(r.pad) funcs.push('ПАД');
+  return `<div class="summaryCell" title="Ширина уборки: ${r.cleaningWidth||'—'} мм
+Производительность: ${r.productivity||'—'} м²/ч
+Баки: ${tank}
+Контейнер: ${r.wasteContainer||'—'} л
+Масса: ${r.weight||'—'} кг
+Габариты: ${dims||'—'}
+Функции: ${funcs.join(', ')||'—'}">
+    <div>${val(r.cleaningWidth,' мм')}</div>
+    <div>${val(r.productivity,' м²/ч')}</div>
+    <div>${tank}</div>
+    <div>${val(r.weight,' кг')}</div>
+  </div>`;
+}
+function summaryNav(r){
+  return `<div class="summaryCell" title="Тип навигации: ${r.navigationType||'—'}
+Работа в толпе: ${r.crowdWork||'—'}
+Интеграция с лифтом: ${r.elevatorIntegration||'—'}
+FMS.ROBO: ${r.fmsRobo||'—'}
+Бампер: ${r.safetyBumper?'Да':'Нет'}">
+    <div>${r.navigationType||'—'}</div>
+    <div>Лифт ${yes(r.elevatorIntegration)}</div>
+    <div>FMS ${yes(r.fmsRobo)}</div>
+    <div>Толпа ${r.crowdWork||'—'}</div>
+  </div>`;
+}
+function summaryStation(r){
+  return `<div class="summaryCell" title="Электрозарядная станция: ${r.chargingStation||'—'}
+Док-станция 3-в-1: ${r.dock3in1||'—'}">
+    <div>⚡ ${yes(r.chargingStation)}</div>
+    <div>3в1 ${yes(r.dock3in1)}</div>
+  </div>`;
+}
+const objectLabels = [
+  ['objTransportHub','Вокзалы','🚉'],
+  ['objBusinessGallery','БЦ/ТРЦ','🏢'],
+  ['objResidentialLobby','Лобби ЖК','🏠'],
+  ['objCulture','Музеи','🏛️'],
+  ['objEducation','Образование','🎓'],
+  ['objOffice','Офис','💼'],
+  ['objIndustrial','Промышленность','🏭'],
+  ['objWarehouse','Склад','📦'],
+  ['objFoodservice','Общепит','🍽️'],
+  ['objRetail','Торговля','🛒'],
+  ['objParking','Паркинг','🅿️']
+];
+function summaryRobo(r){
+  const scored = objectLabels
+    .map(([key,label,icon]) => ({key,label,icon,score: Number(r[key])}))
+    .filter(x => !Number.isNaN(x.score) && isFilledValue(r[x.key]))
+    .sort((a,b)=>b.score-a.score)
+    .slice(0,3);
+  const top = scored.map(x=>`<div>${x.icon} ${x.score}</div>`).join('') || '<div>—</div>';
+  const title = objectLabels.map(([key,label])=>`${label}: ${isFilledValue(r[key])?r[key]:'—'}`).join('\n');
+  return `<div class="summaryCell" title="ROBO Rating: ${r.roboRating||'—'}
+${title}">
+    <div>⭐ ${r.roboRating||'—'}</div>${top}
+  </div>`;
+}
+
+function render(){const text=q.value.toLowerCase();let rows=robots.filter(r=>(!text||Object.values(r).join(' ').toLowerCase().includes(text))&&(!m.value||r.manufacturer===m.value)&&(!s.value||r.subtype===s.value));rows=sortRows(rows);count.textContent=rows.length+' моделей';body.innerHTML=rows.map(r=>`<tr onclick="openCard('${r.id}')"><td>${imageCell(r.id)}</td><td>${r.id}</td><td><b>${r.manufacturer}</b><div class="muted">${r.country||''}</div></td><td>${r.model||''}<div class="muted">${r.purpose||''}</div></td><td><span>${r.subtype||''}</span></td><td>${summaryTech(r)}</td><td>${summaryNav(r)}</td><td>${summaryStation(r)}</td><td>${summaryRobo(r)}</td><td>${completionBadge(completionTotal(r))}</td></tr>`).join('');updateSortMarks();}
 [q,m,s].forEach(x=>x.addEventListener('input',render));
 document.querySelectorAll('th[data-sort]').forEach(th=>th.onclick=()=>{const key=th.dataset.sort;sortState=sortState.key===key?{key,dir:sortState.dir==='asc'?'desc':'asc'}:{key,dir:'asc'};setSort(sortState);render();});
 refill();render();
