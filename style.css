@@ -455,3 +455,8 @@ h3{font-size:16px;margin:18px 0 8px}
   .comparePanel{box-shadow:none!important;max-width:none!important;padding:0!important}
   .compareTable{min-width:0!important;font-size:10px}
 }
+
+/* v9.6 compare functions */
+.boolYes{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;background:#dcfce7;color:#15803d;font-weight:900;font-size:18px}
+.boolNo{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;background:#f1f5f9;color:#94a3b8;font-weight:900;font-size:18px}
+#clearCompareBtn:disabled{opacity:.45;cursor:not-allowed}
