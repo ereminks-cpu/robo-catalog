@@ -1,31 +1,25 @@
-# ROBO Catalog v7.0 — Cloud Storage
+# ROBO Catalog v8.0 — PIM
 
-Версия переводит новые фотографии роботов в Supabase Storage.
+Добавлено:
+- галерея фото по каждому роботу;
+- загрузка файлов/PDF/документов;
+- история изменений карточки;
+- хранение медиа в Supabase Storage;
+- хранение карточек и вкладок в Supabase `robots`.
 
-## Что хранится в облаке
+## Перед загрузкой сайта
 
-- карточки роботов: таблица `public.robots`
-- данные вкладок: JSONB-поле `data`
-- новые фотографии: Supabase Storage bucket `robot-images`
-- ссылка на фото: поле `image`
-- путь к файлу в Storage: поле `imagePath`
+Выполнить в Supabase SQL Editor файл:
 
-## Что сделать
+`supabase_pim_setup.sql`
 
-1. В Supabase SQL Editor выполнить файл:
-   `supabase_storage_setup.sql`
+## На GitHub заменить
 
-2. На GitHub заменить:
-   - `index.html`
-   - `style.css`
-   - `README.md`
+- index.html
+- style.css
+- README.md
 
-3. Открыть сайт и сделать жесткое обновление:
-   - Mac: Cmd + Shift + R
-   - Windows: Ctrl + F5
+## После публикации
 
-4. Войти как admin/editor.
-
-5. Добавить или заменить фото в карточке робота.
-
-После этого новые фото сохраняются не в браузере, а в Supabase Storage.
+- Mac: Cmd + Shift + R
+- Windows: Ctrl + F5
