@@ -1,21 +1,31 @@
-# ROBO Catalog v6.3 — Final Supabase Fix
+# ROBO Catalog v7.0 — Cloud Storage
 
-Исправлена ошибка:
-`Identifier 'supabase' has already been declared`
+Версия переводит новые фотографии роботов в Supabase Storage.
 
-Что изменено:
-- `const supabase = ...` заменено на `const sbClient = ...`
-- все обращения `supabase.from(...)`, `supabase.auth...` заменены на `sbClient...`
+## Что хранится в облаке
 
-Заменить на GitHub:
-- index.html
-- style.css
-- README.md
+- карточки роботов: таблица `public.robots`
+- данные вкладок: JSONB-поле `data`
+- новые фотографии: Supabase Storage bucket `robot-images`
+- ссылка на фото: поле `image`
+- путь к файлу в Storage: поле `imagePath`
 
-После публикации:
-- Mac: Cmd + Shift + R
-- Windows: Ctrl + F5
+## Что сделать
 
-Контрольная проверка в исходном коде страницы:
-- не должно быть `const supabase=`
-- должно быть `const sbClient=`
+1. В Supabase SQL Editor выполнить файл:
+   `supabase_storage_setup.sql`
+
+2. На GitHub заменить:
+   - `index.html`
+   - `style.css`
+   - `README.md`
+
+3. Открыть сайт и сделать жесткое обновление:
+   - Mac: Cmd + Shift + R
+   - Windows: Ctrl + F5
+
+4. Войти как admin/editor.
+
+5. Добавить или заменить фото в карточке робота.
+
+После этого новые фото сохраняются не в браузере, а в Supabase Storage.
