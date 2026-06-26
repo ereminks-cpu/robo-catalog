@@ -695,3 +695,137 @@ h3{font-size:16px;margin:18px 0 8px}
   color:#b91c1c;
   font-size:17px;
 }
+
+/* v9.23 UI Polish — isolated value/status badges */
+.v919Table .manufacturerBadge{
+  background:#eef2ff!important;
+  color:#3730a3!important;
+  border:1px solid #c7d2fe!important;
+  border-radius:8px!important;
+}
+.v919Table .subtypeBadge{
+  background:#d7f8ea!important;
+  color:#08735f!important;
+  border-radius:999px!important;
+}
+
+.v919Table .techList{
+  display:grid!important;
+  gap:4px!important;
+  font-size:12.5px!important;
+  line-height:1.08!important;
+}
+.v919Table .techLine{
+  display:grid!important;
+  grid-template-columns:138px 1fr!important;
+  gap:10px!important;
+  align-items:center!important;
+}
+.v919Table .techLine > span{
+  background:#d7f8ea!important;
+  color:#0f172a!important;
+  border-radius:999px!important;
+  padding:4px 10px!important;
+  font-weight:800!important;
+  line-height:1.1!important;
+}
+.v919Table .techLine > b{
+  display:flex!important;
+  align-items:center!important;
+  min-height:24px!important;
+  color:#0f172a!important;
+  font-weight:900!important;
+}
+
+.v919Table .valueText{
+  color:#0f172a!important;
+  font-weight:900!important;
+}
+.v919Table .valueBadge,
+.v919Table .stationBadge,
+.v919Table .functionBadge{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:999px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  box-sizing:border-box!important;
+}
+.v919Table .valueNone{
+  min-width:34px!important;
+  height:24px!important;
+  padding:0 10px!important;
+  background:#e5e7eb!important;
+  color:#6b7280!important;
+  border:1px solid #d1d5db!important;
+  font-size:17px!important;
+}
+
+.v919Table .stationBadge{
+  min-width:34px!important;
+  height:24px!important;
+  padding:0 10px!important;
+}
+.v919Table .stationYes{
+  background:#dcfce7!important;
+  color:#15803d!important;
+  border:1px solid #bbf7d0!important;
+  font-size:18px!important;
+}
+.v919Table .stationNo{
+  background:#fee2e2!important;
+  color:#b91c1c!important;
+  border:1px solid #fecaca!important;
+  font-size:17px!important;
+}
+.v919Table .stationNone{
+  background:#e5e7eb!important;
+  color:#6b7280!important;
+  border:1px solid #d1d5db!important;
+  font-size:17px!important;
+}
+
+.v919Table .compactClean{
+  grid-template-columns:1fr 42px!important;
+  font-size:12px!important;
+  border:1px solid #e5e7eb!important;
+  border-radius:8px!important;
+  overflow:hidden!important;
+}
+.v919Table .compactClean .cleanName{
+  padding:4px 7px!important;
+  min-height:24px!important;
+  display:flex!important;
+  align-items:center!important;
+  color:#0f172a!important;
+  font-weight:800!important;
+  background:#fff!important;
+}
+.v919Table .compactClean .cleanVal{
+  min-height:24px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:#fff!important;
+}
+.v919Table .functionBadge{
+  width:30px!important;
+  height:22px!important;
+}
+.v919Table .functionYes{
+  background:#dcfce7!important;
+  color:#15803d!important;
+  border:1px solid #bbf7d0!important;
+  font-size:17px!important;
+}
+.v919Table .functionNo{
+  background:#fee2e2!important;
+  color:#b91c1c!important;
+  border:1px solid #fecaca!important;
+  font-size:15px!important;
+}
+
+.v919Table td{padding:7px 8px!important}
+.v919Table tr{min-height:100px!important}
+.v919Table .brushCell .brushIcon{width:82px!important;height:34px!important}
