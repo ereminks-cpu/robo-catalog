@@ -532,3 +532,37 @@ h3{font-size:16px;margin:18px 0 8px}
   .v918Table{min-width:1620px}
   main{overflow:auto}
 }
+
+/* v9.19 compact catalog layout */
+.v919Table th:nth-child(1),.v919Table td:nth-child(1){width:62px;text-align:center}
+.v919Table th:nth-child(2),.v919Table td:nth-child(2){width:98px;text-align:center}
+.v919Table th:nth-child(3),.v919Table td:nth-child(3){width:66px;text-align:center}
+.v919Table th:nth-child(4),.v919Table td:nth-child(4){width:215px}
+.v919Table th:nth-child(5),.v919Table td:nth-child(5){width:118px;text-align:center}
+.v919Table th:nth-child(6),.v919Table td:nth-child(6){width:310px}
+.v919Table th:nth-child(7),.v919Table td:nth-child(7){width:300px}
+.v919Table th:nth-child(8),.v919Table td:nth-child(8){width:120px;text-align:center}
+.v919Table th:nth-child(9),.v919Table td:nth-child(9){width:220px}
+.v919Table th:nth-child(10),.v919Table td:nth-child(10){width:135px;text-align:center}
+.v919Table td{padding:10px 8px}
+.v919Table tr{min-height:120px}
+.v919Table .modelTitle{font-size:15px}
+.v919Table .modelMeta{font-size:12px}
+.v919Table .subtypeBadge{font-size:12px;padding:3px 8px}
+.v919Table .v918Tech{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px;font-size:12px;line-height:1.15}
+.v919Table .techItem{background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:5px 7px;min-height:34px}
+.v919Table .techItem span{display:block;color:#475569;font-weight:700;font-size:10.5px;margin-bottom:2px}
+.v919Table .techItem b{display:block;color:#0f172a;font-size:12.5px;font-weight:800}
+.v919Table .techItem b.emptyVal{color:#ef4444;background:#fee2e2;border-radius:999px;width:max-content;padding:1px 7px}
+.v919Table .cleaningMatrix{grid-template-columns:1fr 54px;font-size:12px;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden}
+.v919Table .cleanName{padding:6px 8px;color:#0f172a;font-weight:700;background:#fff}
+.v919Table .cleanVal{font-size:13px;min-height:30px}
+.v919Table .cleanVal.yes{background:#dcfce7;color:#15803d;font-size:22px}
+.v919Table .cleanVal.no{background:#fee2e2;color:#b91c1c;font-weight:900;text-transform:uppercase;font-size:10px;letter-spacing:.02em}
+.v919Table .brushCell .brushIcon{width:94px;height:38px}
+.v919Table .ratingNumber{width:48px;height:48px;border-width:6px;font-size:20px}
+.v919Table .ratingBar{width:78px}
+.v919Table .objectsCell{gap:4px}
+.v919Table .objChip{font-size:11px;padding:3px 7px}
+.v919Table .completion{min-width:92px}
+@media(max-width:1200px){.v919Table{min-width:1720px}}
