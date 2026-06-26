@@ -473,3 +473,7 @@ h3{font-size:16px;margin:18px 0 8px}
 .manufacturersAdd{grid-template-columns:2fr 1fr auto}
 .profilesTable button{width:auto;padding:6px 9px;font-size:12px}
 .actions .dangerBtn{margin-right:auto}
+
+/* v9.13 manufacturer directory fix */
+.manufacturersAdd{grid-template-columns:2fr 1fr auto auto}
+#syncManufacturers{background:#fff;border:1px solid #d9d9d9;color:#0f172a}
