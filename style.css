@@ -829,3 +829,71 @@ h3{font-size:16px;margin:18px 0 8px}
 .v919Table td{padding:7px 8px!important}
 .v919Table tr{min-height:100px!important}
 .v919Table .brushCell .brushIcon{width:82px!important;height:34px!important}
+
+/* v9.24 mobile layout */
+.mobileOnly,.mobileCards{display:none}
+@media(max-width:760px){
+  body{background:#f6f8fb}
+  header{padding:16px 14px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
+  .brand{gap:10px}
+  .brandLogo{width:54px;height:54px;border-radius:12px}
+  header h1{font-size:26px;line-height:1.05}
+  header p{font-size:13px}
+  .userBox{font-size:12px;text-align:right}
+  .viewTabs{padding:12px 14px;gap:8px}
+  .viewTabs button{padding:10px 14px;border-radius:12px}
+  .toolbar{padding:0 14px 12px}
+  .filters{display:grid;grid-template-columns:1fr;gap:8px}
+  .filters input,.filters select{width:100%;height:42px;font-size:15px}
+  .mobileOnly{display:block}
+  .actionsBar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .actionsBar button{width:100%;min-height:42px;font-size:14px}
+  #seedBtn,#adminBtn{grid-column:span 2}
+  #modeHint{font-size:12px;line-height:1.25;margin-top:8px}
+  #catalogView main{display:none}
+  .mobileCards{display:grid;gap:12px;padding:0 14px 18px}
+  .robotMobileCard{background:white;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 8px 28px rgba(15,23,42,.06);padding:12px}
+  .mTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .mCompare{font-size:13px;color:#475569;display:flex;align-items:center;gap:6px}
+  .mCompare input{width:18px;height:18px}
+  .mId{font-weight:900;color:#0f766e}
+  .mMain{display:grid;grid-template-columns:84px 1fr 58px;gap:10px;align-items:center}
+  .mPhoto{width:84px;height:84px;border-radius:14px;background:#f8fafc;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .mPhoto img{max-width:100%;max-height:100%;object-fit:contain}
+  .mNoPhoto{font-size:11px;color:#94a3b8;text-align:center}
+  .mInfo h3{font-size:18px;margin:6px 0 5px;line-height:1.1;color:#0f172a}
+  .mMeta{font-size:12px;color:#475569;margin-top:3px}
+  .mRating{width:54px;height:54px;border-radius:999px;border:6px solid #22c55e;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;background:#fff}
+  .mRating.mid{border-color:#eab308}
+  .mRating.bad{border-color:#ef4444}
+  .mRating b{font-size:20px}
+  .mRating span{font-size:10px;font-weight:800;color:#475569}
+  .mSpecs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+  .mSpecs div{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:8px}
+  .mSpecs span{display:block;font-size:11px;font-weight:800;color:#64748b;margin-bottom:3px}
+  .mSpecs b{font-size:13px;color:#0f172a}
+  .mSpecs br{display:block}
+  .mYes,.mNo,.mNone{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:22px;border-radius:999px;font-weight:900}
+  .mYes{background:#dcfce7;color:#15803d}
+  .mNo{background:#fee2e2;color:#b91c1c}
+  .mNone{background:#e5e7eb;color:#6b7280}
+  .mFunctions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .mFunc{font-size:11px;font-weight:800;border-radius:999px;padding:5px 8px}
+  .mFunc.on{background:#dcfce7;color:#166534}
+  .mFunc.off{background:#fee2e2;color:#991b1b}
+  .mFooter{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border-top:1px solid #e5e7eb;margin-top:11px;padding-top:10px}
+  .mFooter strong{font-size:12px;color:#475569}
+  .mObjects{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+  .mObj{font-size:10.5px;font-weight:800;border-radius:999px;padding:4px 7px}
+  .mObj.score2{background:#dcfce7;color:#166534}
+  .mObj.score3{background:#15803d;color:white}
+  .mNoneText{font-size:12px;color:#94a3b8}
+  .mCompletion .completion{min-width:74px}
+  .card .panel{width:100vw;height:100vh;border-radius:0;padding:18px;overflow:auto}
+  .cardGrid{display:grid;grid-template-columns:1fr}
+  .tabs{overflow:auto;white-space:nowrap;padding-bottom:4px}
+  .tabs button{font-size:14px;padding:9px 12px}
+  .bigPhoto{max-width:100%;height:240px}
+  .formGrid{grid-template-columns:1fr!important}
+  .modal .comparePanel,.modal .adminPanel,.modal .loginPanel{width:calc(100vw - 20px);max-height:90vh;overflow:auto;border-radius:18px;padding:18px}
+}
