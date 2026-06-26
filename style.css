@@ -897,3 +897,13 @@ h3{font-size:16px;margin:18px 0 8px}
   .formGrid{grid-template-columns:1fr!important}
   .modal .comparePanel,.modal .adminPanel,.modal .loginPanel{width:calc(100vw - 20px);max-height:90vh;overflow:auto;border-radius:18px;padding:18px}
 }
+
+/* v9.25 mobile render fix */
+.mobileCatalogView{display:none}
+.mobileError{background:#fee2e2;color:#991b1b;border:1px solid #fecaca;border-radius:12px;padding:12px;font-weight:700}
+@media(max-width:760px){
+  #catalogView{display:block!important}
+  #catalogView main{display:none!important}
+  .mobileCatalogView{display:block!important}
+  .mobileCards{display:grid!important;gap:12px;padding:0 14px 18px;min-height:120px}
+}
