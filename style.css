@@ -641,3 +641,57 @@ h3{font-size:16px;margin:18px 0 8px}
 .v919Table th:nth-child(8),.v919Table td:nth-child(8){width:110px}
 .v919Table .brushCell .brushIcon{width:82px;height:34px}
 @media(max-width:1200px){.v919Table{min-width:1660px}}
+
+/* v9.21 table polish */
+.v919Table .manufacturerBadge{
+  background:#eef2ff!important;
+  color:#3730a3!important;
+  border:1px solid #c7d2fe!important;
+  border-radius:8px!important;
+  text-transform:none;
+}
+.v919Table .subtypeBadge{
+  background:#d7f8ea!important;
+  color:#08735f!important;
+  border-radius:999px!important;
+}
+.v919Table .techLine{
+  grid-template-columns:138px 1fr;
+}
+.v919Table .techLine span{
+  background:#d7f8ea;
+  border-radius:999px;
+  padding:4px 10px;
+  line-height:1.1;
+}
+.v919Table .techLine b{
+  display:flex;
+  align-items:center;
+  min-height:24px;
+}
+.stationMark{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:30px;
+  height:24px;
+  padding:0 8px;
+  border-radius:999px;
+  font-weight:900;
+  line-height:1;
+}
+.stationMark.yes{
+  background:#dcfce7;
+  color:#15803d;
+  font-size:19px;
+}
+.stationMark.unknown{
+  background:#e5e7eb;
+  color:#64748b;
+  font-size:17px;
+}
+.stationMark.no{
+  background:#fee2e2;
+  color:#b91c1c;
+  font-size:17px;
+}
