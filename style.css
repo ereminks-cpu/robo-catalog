@@ -566,3 +566,78 @@ h3{font-size:16px;margin:18px 0 8px}
 .v919Table .objChip{font-size:11px;padding:3px 7px}
 .v919Table .completion{min-width:92px}
 @media(max-width:1200px){.v919Table{min-width:1720px}}
+
+/* v9.20 final table layout */
+.v919Table .manufacturerBadge{
+  display:inline-flex;
+  width:max-content;
+  max-width:100%;
+  padding:3px 9px;
+  border-radius:999px;
+  background:#d7f8ea;
+  color:#08735f;
+  font-weight:900;
+  font-size:12px;
+  margin-bottom:3px;
+}
+.v919Table .modelCell{gap:6px}
+.v919Table .modelTitle{font-size:15px;line-height:1.15}
+.v919Table .modelMeta{font-size:11.5px;line-height:1.15}
+.v919Table .subtypeBadge{font-size:11.5px;padding:3px 8px}
+
+.v919Table .techList{
+  display:grid;
+  gap:4px;
+  font-size:12.5px;
+  line-height:1.08;
+  padding:2px 0;
+}
+.v919Table .techLine{
+  display:grid;
+  grid-template-columns:145px 1fr;
+  gap:12px;
+  align-items:start;
+}
+.v919Table .techLine span{
+  color:#0f172a;
+  font-weight:700;
+}
+.v919Table .techLine b{
+  color:#0f172a;
+  font-weight:800;
+}
+.logicYes{color:#15803d;font-size:17px;font-weight:900}
+.logicNo{color:#b91c1c;font-size:15px;font-weight:900}
+.logicUnknown{color:#94a3b8;font-size:15px;font-weight:900}
+
+.v919Table .compactClean{
+  grid-template-columns:1fr 42px;
+  font-size:12px;
+  border-radius:8px;
+}
+.v919Table .compactClean .cleanName{
+  padding:4px 7px;
+  min-height:24px;
+  display:flex;
+  align-items:center;
+}
+.v919Table .compactClean .cleanVal{
+  min-height:24px;
+  font-size:13px;
+}
+.v919Table .compactClean .cleanVal.yes{
+  font-size:18px;
+}
+.v919Table .compactClean .cleanVal.no{
+  background:#fee2e2;
+  color:#b91c1c;
+  font-size:14px;
+}
+
+.v919Table td{padding:8px 8px}
+.v919Table tr{min-height:105px}
+.v919Table th:nth-child(6),.v919Table td:nth-child(6){width:275px}
+.v919Table th:nth-child(7),.v919Table td:nth-child(7){width:260px}
+.v919Table th:nth-child(8),.v919Table td:nth-child(8){width:110px}
+.v919Table .brushCell .brushIcon{width:82px;height:34px}
+@media(max-width:1200px){.v919Table{min-width:1660px}}
