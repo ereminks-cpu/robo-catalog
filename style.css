@@ -967,3 +967,56 @@ h3{font-size:16px;margin:18px 0 8px}
 .multiCheckItem:hover{background:#f8fafc}
 .multiCheckItem input{width:auto!important;min-width:auto!important}
 .criteriaOperator:disabled{background:#f1f5f9;color:#64748b}
+
+/* v10.40.1 Solution Advisor UI */
+.solutionView{padding:18px 36px 36px;background:#f6f7f9;min-height:70vh}
+.solutionHero{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:stretch;margin-bottom:14px}
+.solutionHero h2{margin:4px 0;font-size:30px}
+.solutionHero p{margin:0;color:#667085;max-width:760px}
+.solutionEyebrow{color:#0f766e;font-weight:900;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.solutionProfileCard{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;box-shadow:0 8px 24px rgba(15,23,42,.06)}
+.solutionProfileCard span,.solutionProfileCard small{display:block;color:#667085}
+.solutionProfileCard b{display:block;font-size:20px;margin:6px 0;color:#0f172a}
+.solutionStepper{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.solutionStepper button{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px;font-weight:800;color:#475569}
+.solutionStepper button.active{background:#0f766e;color:#fff;border-color:#0f766e}
+.solutionWizard{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:18px;box-shadow:0 10px 28px rgba(15,23,42,.07)}
+.solutionStep{display:none}
+.solutionStep.active{display:block}
+.solutionStep h3{margin:0 0 10px;font-size:24px}
+.objectChoice{display:flex;gap:14px;align-items:center;border:2px solid #0f766e;background:#f0fdfa;border-radius:16px;padding:16px;max-width:560px}
+.objectIcon{font-size:34px}
+.objectChoice b{display:block;font-size:18px;color:#0f172a}
+.objectChoice span{display:block;color:#667085}
+.solutionFields{display:grid;grid-template-columns:repeat(2,minmax(240px,1fr));gap:12px;max-width:900px}
+.solutionFields label span{display:block;color:#667085;font-weight:800;font-size:13px;margin-bottom:5px}
+.solutionFields input{width:100%;padding:10px;border:1px solid #d0d5dd;border-radius:10px}
+.solutionHint{margin-top:12px;background:#f8fafc;border-left:4px solid #0f766e;border-radius:10px;padding:10px;color:#475569}
+.solutionChecks{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:10px;max-width:720px}
+.solutionChecks label{display:flex;gap:10px;align-items:center;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:12px;font-weight:800}
+.solutionChecks input{width:18px;height:18px}
+.solutionNav{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.solutionNav button{border:0;background:#0f766e;color:white;border-radius:10px;padding:11px 16px;font-weight:900}
+.solutionNav button.secondary{background:#fff;color:#0f172a;border:1px solid #d0d5dd}
+.solutionResultHeader{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.recommendationBadge{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:999px;padding:7px 11px;font-weight:900}
+.solutionSummary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.solutionSummary div{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:12px}
+.solutionSummary span{display:block;color:#667085;font-weight:800;font-size:12px}
+.solutionSummary b{display:block;color:#0f172a;margin-top:4px}
+.recommendationGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.recommendationCard{position:relative;background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:16px;box-shadow:0 8px 24px rgba(15,23,42,.06)}
+.recommendationCard.best{border-color:#0f766e;background:linear-gradient(180deg,#f0fdfa,#fff)}
+.recommendationCard .rank{font-size:28px}
+.recMain h4{margin:8px 0 4px;color:#667085}
+.recMain b{font-size:20px;color:#0f172a}
+.stars{color:#f59e0b;margin-top:8px;font-size:18px;letter-spacing:1px}
+.match{font-size:34px;font-weight:1000;color:#0f766e;margin:8px 0}
+.recommendationCard details{margin-top:8px}
+.recommendationCard summary{cursor:pointer;font-weight:900;color:#0f172a}
+.recommendationCard ul{margin:8px 0 0;padding-left:20px;color:#475569}
+@media(max-width:1000px){
+  .solutionView{padding:14px}
+  .solutionHero,.solutionFields,.solutionChecks,.solutionSummary,.recommendationGrid{grid-template-columns:1fr}
+  .solutionStepper{grid-template-columns:1fr 1fr}
+}
