@@ -951,3 +951,7 @@ h3{font-size:16px;margin:18px 0 8px}
 .weightStatus.warn strong{color:#a16207}
 .weightStatus.bad strong{color:#b91c1c}
 .criteriaTable select.criteriaThreshold{min-width:86px}
+
+/* v10.32 criteria fixes */
+.criteriaThresholdMulti{min-width:190px;min-height:86px}
+.criteriaTable optgroup{font-weight:800;color:#0f766e}

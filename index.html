@@ -100,7 +100,7 @@
 
 </div></div>
 
-<!-- ROBO Catalog v10.31 PIM cloud -->
+<!-- ROBO Catalog v10.32 PIM cloud -->
 <script>
 const SUPABASE_URL="https://pwnpxxhrhxrtcxmcofcc.supabase.co", SUPABASE_ANON_KEY="sb_publishable_LIiJr0mPfi8iq16mVknHew_-pO0AYNS";
 const sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
@@ -782,13 +782,13 @@ async function deleteManufacturer(name){
 
 
 const solutionFieldMeta={
-  manufacturer:{label:'Производитель',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
-  country:{label:'Страна',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''},
+  manufacturer:{label:'Производитель',group:'Паспорт',dataType:'multi_enum',optionsKey:'manufacturer',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
+  country:{label:'Страна',group:'Паспорт',dataType:'multi_enum',optionsKey:'country',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
   model:{label:'Модель',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
-  type:{label:'Тип эксплуатации',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''},
-  purpose:{label:'Назначение',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''},
-  subtype:{label:'Подтип',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''},
-  status:{label:'Статус',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''},
+  type:{label:'Тип эксплуатации',group:'Паспорт',dataType:'multi_enum',optionsKey:'type',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
+  purpose:{label:'Назначение',group:'Паспорт',dataType:'multi_enum',optionsKey:'purpose',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
+  subtype:{label:'Подтип',group:'Паспорт',dataType:'multi_enum',optionsKey:'subtype',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
+  status:{label:'Статус',group:'Паспорт',dataType:'multi_enum',optionsKey:'status',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
   link:{label:'Ссылка на модель',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
 
   cleaningWidth:{label:'Ширина уборки, мм',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'500'},
@@ -801,7 +801,7 @@ const solutionFieldMeta={
   length:{label:'Длина, мм',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:''},
   widthSize:{label:'Ширина робота, мм',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:''},
   height:{label:'Высота робота, мм',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'1000'},
-  brushType:{label:'Тип моющего узла',group:'Характеристики',dataType:'text',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:''},
+  brushType:{label:'Тип моющего узла',group:'Характеристики',dataType:'multi_enum',optionsKey:'brushType',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:''},
 
   sweeping:{label:'Функция подметания',group:'Функции уборки',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
   vacuum:{label:'Функция вакуумного пылесоса',group:'Функции уборки',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
@@ -809,17 +809,16 @@ const solutionFieldMeta={
   flatDryWaste:{label:'Сбор плоского сухого мусора',group:'Функции уборки',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
   pad:{label:'Функция ПАД',group:'Функции уборки',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
 
-  navigationType:{label:'Тип навигации',group:'Навигация',dataType:'text',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:''},
-  crowdWork:{label:'Работа в толпе',group:'Навигация',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
-  elevatorIntegration:{label:'Интеграция с лифтом',group:'Навигация',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
-  fmsRobo:{label:'Подключение к FMS.ROBO',group:'Навигация',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
+  navigationType:{label:'Тип навигации',group:'Навигация',dataType:'multi_enum',optionsKey:'navigationType',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:''},
+  crowdWork:{label:'Работа в толпе',group:'Навигация',dataType:'multi_enum',optionsKey:'crowdWork',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:'Да'},
+  elevatorIntegration:{label:'Интеграция с лифтом',group:'Навигация',dataType:'multi_enum',optionsKey:'elevatorIntegration',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:'Да'},
+  fmsRobo:{label:'Подключение к FMS.ROBO',group:'Навигация',dataType:'multi_enum',optionsKey:'fmsRobo',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:'Да'},
 
   safetyBumper:{label:'Бампер безопасности',group:'Безопасность',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
   warningBeacon:{label:'Проблесковый маячок',group:'Безопасность',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
-  beaconLight:{label:'Проблесковый маячок',group:'Безопасность',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
   safetyProjection:{label:'Светосигнальная аппаратура / проекция зон безопасности',group:'Безопасность',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
 
-  chargingStation:{label:'Электрозарядная станция',group:'Станция',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
+  chargingStation:{label:'Электрозарядная станция',group:'Станция',dataType:'multi_enum',optionsKey:'yesNo',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:'Да'},
   dock3in1:{label:'Док-станция 3в1',group:'Станция',dataType:'boolean',defaultType:'score',defaultWeight:10,operator:'=',threshold:'true'},
 
   freeParkingSpotAlgorithm:{label:'Алгоритм уборки свободных машиномест',group:'Алгоритмы',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
@@ -866,7 +865,7 @@ function availableSolutionFields(){
 }
 function solutionFieldByName(field){return availableSolutionFields().find(x=>x.field===field)||{field,label:field,group:'Прочее',dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''}}
 function dataTypeLabel(t){
-  return ({boolean:'Да/Нет',number:'Число',number_pair:'Пара чисел',score03:'0–3 балла',text:'Текст'}[t]||t||'Текст');
+  return ({boolean:'Да/Нет',number:'Число',number_pair:'Пара чисел',score03:'0–3 балла',text:'Текст',multi_enum:'Справочник'}[t]||t||'Текст');
 }
 function thresholdValueToUi(c){
   const dt=solutionFieldByName(c.field_name).dataType;
@@ -880,6 +879,31 @@ function thresholdValueFromUi(field,value){
   const dt=solutionFieldByName(field).dataType;
   if(dt==='boolean')return String(value).toLowerCase()==='да'?'true':'false';
   return value;
+}
+function criterionOptionValues(field){
+  const meta=solutionFieldByName(field);
+  const key=meta.optionsKey;
+  let values=[];
+  if(key && typeof dictionaries!=='undefined' && Array.isArray(dictionaries[key])) values=dictionaries[key].filter(Boolean);
+  if(key==='manufacturer') values=Object.keys(manufacturerCountries||{}).filter(Boolean);
+  if(key==='country') values=[...new Set(Object.values(manufacturerCountries||{}).filter(Boolean))];
+  robots.forEach(r=>{const v=r?.[field]; if(v!==undefined&&v!==null&&String(v).trim())values.push(String(v).trim())});
+  return [...new Set(values)].sort((a,b)=>String(a).localeCompare(String(b),'ru'));
+}
+function thresholdParts(v){
+  return String(v||'').split('|').map(x=>x.trim()).filter(Boolean);
+}
+function thresholdEditorHtml(c,realIndex){
+  const meta=solutionFieldByName(c.field_name);
+  if(meta.dataType==='boolean'){
+    return `<select class="criteriaThreshold" data-i="${realIndex}" onchange="collectCriteriaAdmin()"><option value="Да" ${thresholdValueToUi(c)==='Да'?'selected':''}>Да</option><option value="Нет" ${thresholdValueToUi(c)==='Нет'?'selected':''}>Нет</option></select>`;
+  }
+  if(meta.dataType==='multi_enum'){
+    const selected=new Set(thresholdParts(c.threshold));
+    const opts=criterionOptionValues(c.field_name).map(v=>`<option value="${String(v).replaceAll('"','&quot;')}" ${selected.has(String(v))?'selected':''}>${v}</option>`).join('');
+    return `<select multiple class="criteriaThreshold criteriaThresholdMulti" data-i="${realIndex}" onchange="collectCriteriaAdmin()">${opts}</select><div class="muted">Можно выбрать несколько значений</div>`;
+  }
+  return `<input class="criteriaThreshold" data-i="${realIndex}" value="${String(c.threshold??'').replaceAll('"','&quot;')}" oninput="collectCriteriaAdmin()">`;
 }
 function defaultParkingCriteria(){
   const fields=['wetCleaning','objParking','roboRating','productivity','cleaningWidth','height','cleanWater_dirtyWater','dock3in1','warningBeacon','safetyProjection','freeParkingSpotAlgorithm'];
@@ -933,6 +957,13 @@ async function loadCriteriaForProfile(profileId){
     const {data,error}=await sbClient.from('solution_criteria').select('*').eq('profile_id',profileId).order('sort_order');
     if(error)throw error;
     criteriaList=(data||[]).map(normalizeCriterionRow);
+    const seenFields=new Set();
+    criteriaList=criteriaList.filter(c=>{
+      if(c.field_name==='beaconLight')c.field_name='warningBeacon';
+      if(seenFields.has(c.field_name))return false;
+      seenFields.add(c.field_name);
+      return true;
+    });
   }catch(e){
     console.warn('criteria load fallback',e);
     criteriaList=profileId==='parking'?defaultParkingCriteria().map(normalizeCriterionRow):[];
@@ -972,16 +1003,14 @@ function renderCriteriaAdmin(){
     const meta=solutionFieldByName(c.field_name);
     const ops=['=','≠','>','<','≥','≤','Да','Нет','Содержит','Не содержит'];
     const isFilter=c.criterion_type==='filter';
-    const thresholdEditor=meta.dataType==='boolean'
-      ? `<select class="criteriaThreshold" data-i="${realIndex}"><option value="Да" ${thresholdValueToUi(c)==='Да'?'selected':''}>Да</option><option value="Нет" ${thresholdValueToUi(c)==='Нет'?'selected':''}>Нет</option></select>`
-      : `<input class="criteriaThreshold" data-i="${realIndex}" value="${String(c.threshold??'').replaceAll('"','&quot;')}">`;
+    const thresholdEditor=thresholdEditorHtml(c,realIndex);
     return `<tr class="${isFilter?'criteriaFilterRow':''}">
-      <td><input type="checkbox" class="criteriaEnabled" data-i="${realIndex}" ${c.enabled!==false?'checked':''}></td>
-      <td><input class="criteriaDisplayName" data-i="${realIndex}" value="${String(c.display_name||meta.label||'').replaceAll('"','&quot;')}"></td>
+      <td><input type="checkbox" class="criteriaEnabled" data-i="${realIndex}" ${c.enabled!==false?'checked':''} onchange="collectCriteriaAdmin();renderWeightSummary()"></td>
+      <td><input class="criteriaDisplayName" data-i="${realIndex}" value="${String(c.display_name||meta.label||'').replaceAll('"','&quot;')}" oninput="collectCriteriaAdmin()"></td>
       <td><div class="fieldHuman">${meta.label}</div><code>${c.field_name}</code><div class="muted">${dataTypeLabel(meta.dataType)}</div></td>
       <td><select class="criteriaType" data-i="${realIndex}" onchange="onCriterionTypeChange(${realIndex},this.value)"><option value="filter" ${isFilter?'selected':''}>Фильтр</option><option value="score" ${!isFilter?'selected':''}>Балльный</option></select></td>
-      <td><div class="weightInputWrap"><input class="criteriaWeight" data-i="${realIndex}" type="number" min="0" max="100" step="1" value="${isFilter?0:Number(c.weight||0)}" ${isFilter?'disabled':''}><span>%</span></div></td>
-      <td><select class="criteriaOperator" data-i="${realIndex}">${ops.map(op=>`<option value="${op}" ${String(c.operator||'=')===op?'selected':''}>${op}</option>`).join('')}</select></td>
+      <td><div class="weightInputWrap"><input class="criteriaWeight" data-i="${realIndex}" type="number" min="0" max="100" step="1" value="${isFilter?0:Number(c.weight||0)}" ${isFilter?'disabled':''} oninput="collectCriteriaAdmin();renderWeightSummary()"><span>%</span></div></td>
+      <td><select class="criteriaOperator" data-i="${realIndex}" onchange="collectCriteriaAdmin()">${ops.map(op=>`<option value="${op}" ${String(c.operator||'=')===op?'selected':''}>${op}</option>`).join('')}</select></td>
       <td>${thresholdEditor}</td>
       <td><button class="dangerBtn" onclick="removeCriterion(${realIndex})">Удалить</button></td>
     </tr>`;
@@ -1006,7 +1035,10 @@ function collectCriteriaAdmin(){
   document.querySelectorAll('.criteriaOperator').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].operator=el.value});
   document.querySelectorAll('.criteriaThreshold').forEach(el=>{
     const i=+el.dataset.i;
-    if(criteriaList[i])criteriaList[i].threshold=thresholdValueFromUi(criteriaList[i].field_name,el.value);
+    if(criteriaList[i]){
+      const val=el.multiple?[...el.selectedOptions].map(o=>o.value).join('|'):el.value;
+      criteriaList[i].threshold=thresholdValueFromUi(criteriaList[i].field_name,val);
+    }
   });
   criteriaList.forEach((c,i)=>c.sort_order=i+1);
 }
@@ -1029,6 +1061,7 @@ async function saveCriteriaProfiles(){
     }
     await loadCriteriaForProfile(criteriaActiveProfileId);
     renderCriteriaAdmin();
+    renderWeightSummary();
     alert('Критерии сохранены');
   }catch(e){alert('Ошибка сохранения критериев: '+(e.message||e))}
 }
