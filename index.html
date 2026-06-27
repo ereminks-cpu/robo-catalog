@@ -100,7 +100,7 @@
 
 </div></div>
 
-<!-- ROBO Catalog v10.30 PIM cloud -->
+<!-- ROBO Catalog v10.31 PIM cloud -->
 <script>
 const SUPABASE_URL="https://pwnpxxhrhxrtcxmcofcc.supabase.co", SUPABASE_ANON_KEY="sb_publishable_LIiJr0mPfi8iq16mVknHew_-pO0AYNS";
 const sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
@@ -782,42 +782,64 @@ async function deleteManufacturer(name){
 
 
 const solutionFieldMeta={
-  wetCleaning:{label:'Влажная уборка пола',dataType:'boolean',defaultType:'filter',defaultWeight:0,operator:'=',threshold:'true'},
-  sweeping:{label:'Функция подметания',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
-  vacuum:{label:'Функция вакуумного пылесоса',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
-  flatDryWaste:{label:'Сбор плоского сухого мусора',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
-  pad:{label:'Функция ПАД',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
-  objParking:{label:'ROBO-Аналитика: Подземный паркинг',dataType:'score03',defaultType:'score',defaultWeight:20,operator:'≥',threshold:'2'},
-  roboRating:{label:'ROBO Rating',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'7'},
-  productivity:{label:'Производительность, м²/ч',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'600'},
-  cleaningWidth:{label:'Ширина уборки, мм',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'500'},
-  height:{label:'Высота робота, мм',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'1000'},
-  cleanWater:{label:'Бак чистой воды, л',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'50'},
-  dirtyWater:{label:'Бак грязной воды, л',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'50'},
-  cleanWater_dirtyWater:{label:'Раздельные баки чистой/грязной воды, л',dataType:'number_pair',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'50'},
-  dock3in1:{label:'Док-станция 3в1',dataType:'boolean',defaultType:'score',defaultWeight:10,operator:'=',threshold:'true'},
-  warningBeacon:{label:'Проблесковый маячок',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
-  safetyProjection:{label:'Светосигнальная аппаратура / проекция зон безопасности',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
-  freeParkingSpotAlgorithm:{label:'Алгоритм уборки свободных машиномест',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
-  safetyBumper:{label:'Бампер безопасности',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
-  navigationType:{label:'Тип навигации',dataType:'text',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:''},
-  crowdWork:{label:'Работа в толпе',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
-  elevatorIntegration:{label:'Интеграция с лифтом',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
-  fmsRobo:{label:'Подключение к FMS.ROBO',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
-  chargingStation:{label:'Электрозарядная станция',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
-  length:{label:'Длина, мм',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:''},
-  widthSize:{label:'Ширина робота, мм',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:''},
-  weight:{label:'Масса, кг',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≤',threshold:''},
-  wasteContainer:{label:'Контейнер / бункер мусора, л',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:''},
-  brushType:{label:'Тип моющего узла',dataType:'text',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:''}
+  manufacturer:{label:'Производитель',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
+  country:{label:'Страна',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''},
+  model:{label:'Модель',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
+  type:{label:'Тип эксплуатации',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''},
+  purpose:{label:'Назначение',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''},
+  subtype:{label:'Подтип',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''},
+  status:{label:'Статус',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''},
+  link:{label:'Ссылка на модель',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
+
+  cleaningWidth:{label:'Ширина уборки, мм',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'500'},
+  productivity:{label:'Производительность, м²/ч',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'600'},
+  cleanWater:{label:'Бак чистой воды, л',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'50'},
+  dirtyWater:{label:'Бак грязной воды, л',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'50'},
+  cleanWater_dirtyWater:{label:'Раздельные баки чистой/грязной воды, л',group:'Характеристики',dataType:'number_pair',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'50'},
+  wasteContainer:{label:'Контейнер / бункер мусора, л',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:''},
+  weight:{label:'Масса, кг',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≤',threshold:''},
+  length:{label:'Длина, мм',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:''},
+  widthSize:{label:'Ширина робота, мм',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:''},
+  height:{label:'Высота робота, мм',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'1000'},
+  brushType:{label:'Тип моющего узла',group:'Характеристики',dataType:'text',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:''},
+
+  sweeping:{label:'Функция подметания',group:'Функции уборки',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  vacuum:{label:'Функция вакуумного пылесоса',group:'Функции уборки',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  wetCleaning:{label:'Влажная уборка пола',group:'Функции уборки',dataType:'boolean',defaultType:'filter',defaultWeight:0,operator:'=',threshold:'true'},
+  flatDryWaste:{label:'Сбор плоского сухого мусора',group:'Функции уборки',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  pad:{label:'Функция ПАД',group:'Функции уборки',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+
+  navigationType:{label:'Тип навигации',group:'Навигация',dataType:'text',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:''},
+  crowdWork:{label:'Работа в толпе',group:'Навигация',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
+  elevatorIntegration:{label:'Интеграция с лифтом',group:'Навигация',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
+  fmsRobo:{label:'Подключение к FMS.ROBO',group:'Навигация',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
+
+  safetyBumper:{label:'Бампер безопасности',group:'Безопасность',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  warningBeacon:{label:'Проблесковый маячок',group:'Безопасность',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  beaconLight:{label:'Проблесковый маячок',group:'Безопасность',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  safetyProjection:{label:'Светосигнальная аппаратура / проекция зон безопасности',group:'Безопасность',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+
+  chargingStation:{label:'Электрозарядная станция',group:'Станция',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
+  dock3in1:{label:'Док-станция 3в1',group:'Станция',dataType:'boolean',defaultType:'score',defaultWeight:10,operator:'=',threshold:'true'},
+
+  freeParkingSpotAlgorithm:{label:'Алгоритм уборки свободных машиномест',group:'Алгоритмы',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  freeParkingAlgorithm:{label:'Алгоритм уборки свободных машиномест',group:'Алгоритмы',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+
+  roboRating:{label:'ROBO Rating',group:'ROBO-Аналитика',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'7'},
+  objParking:{label:'ROBO-Аналитика — Подземный паркинг',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:20,operator:'≥',threshold:'2'},
+  objTransportHub:{label:'ROBO-Аналитика — Аэро/ЖД/Автовокзал',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'2'},
+  objBusinessGallery:{label:'ROBO-Аналитика — Галерея БЦ/ТРЦ',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'2'},
+  objResidentialLobby:{label:'ROBO-Аналитика — Лобби ЖК',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'2'},
+  objCulture:{label:'ROBO-Аналитика — Музеи/выставочные комплексы',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'2'},
+  objEducation:{label:'ROBO-Аналитика — Образование',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'2'},
+  objOffice:{label:'ROBO-Аналитика — Офис',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'2'},
+  objIndustrial:{label:'ROBO-Аналитика — Промышленность',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'2'},
+  objWarehouse:{label:'ROBO-Аналитика — Склад',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'2'},
+  objFoodservice:{label:'ROBO-Аналитика — Столовая/общепит',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'2'},
+  objRetail:{label:'ROBO-Аналитика — Торговая площадь',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'2'},
+  roboComment:{label:'Комментарий ROBO-Аналитики',group:'ROBO-Аналитика',dataType:'text',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''}
 };
-const solutionKnownCardFields=[
-  'wetCleaning','sweeping','vacuum','flatDryWaste','pad',
-  'objParking','roboRating','productivity','cleaningWidth','height','cleanWater','dirtyWater','cleanWater_dirtyWater',
-  'dock3in1','warningBeacon','safetyProjection','freeParkingSpotAlgorithm','safetyBumper',
-  'navigationType','crowdWork','elevatorIntegration','fmsRobo','chargingStation',
-  'length','widthSize','weight','wasteContainer','brushType'
-];
+const solutionKnownCardFields=Object.keys(solutionFieldMeta);
 let criteriaProfiles=[];
 let criteriaList=[];
 let criteriaActiveProfileId='parking';
@@ -826,22 +848,39 @@ let criteriaSortDir='asc';
 function availableSolutionFields(){
   const keys=new Set(solutionKnownCardFields);
   robots.forEach(r=>Object.keys(r||{}).forEach(k=>{
-    if(k && !['id','image','imagePath','gallery','files','history'].includes(k))keys.add(k);
+    if(solutionFieldMeta[k])keys.add(k);
   }));
   return [...keys].map(k=>{
     const m=solutionFieldMeta[k]||{};
     return {
       field:k,
       label:m.label||k,
+      group:m.group||'Прочее',
       dataType:m.dataType||'text',
       defaultType:m.defaultType||'score',
       defaultWeight:m.defaultWeight||0,
       operator:m.operator||'=',
       threshold:m.threshold||''
     };
-  }).sort((a,b)=>a.label.localeCompare(b.label,'ru'));
+  }).sort((a,b)=>(a.group.localeCompare(b.group,'ru')||a.label.localeCompare(b.label,'ru')));
 }
-function solutionFieldByName(field){return availableSolutionFields().find(x=>x.field===field)||{field,label:field,dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''}}
+function solutionFieldByName(field){return availableSolutionFields().find(x=>x.field===field)||{field,label:field,group:'Прочее',dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''}}
+function dataTypeLabel(t){
+  return ({boolean:'Да/Нет',number:'Число',number_pair:'Пара чисел',score03:'0–3 балла',text:'Текст'}[t]||t||'Текст');
+}
+function thresholdValueToUi(c){
+  const dt=solutionFieldByName(c.field_name).dataType;
+  if(dt==='boolean'){
+    const v=String(c.threshold??'').toLowerCase();
+    return (v==='true'||v==='1'||v==='да'||v==='yes')?'Да':'Нет';
+  }
+  return String(c.threshold??'');
+}
+function thresholdValueFromUi(field,value){
+  const dt=solutionFieldByName(field).dataType;
+  if(dt==='boolean')return String(value).toLowerCase()==='да'?'true':'false';
+  return value;
+}
 function defaultParkingCriteria(){
   const fields=['wetCleaning','objParking','roboRating','productivity','cleaningWidth','height','cleanWater_dirtyWater','dock3in1','warningBeacon','safetyProjection','freeParkingSpotAlgorithm'];
   return fields.map((f,i)=>{
@@ -905,7 +944,8 @@ function renderWeightSummary(){
   const el=document.getElementById('criteriaWeightSummary'); if(!el)return;
   const sum=criteriaWeightSum();
   const cls=sum===100?'ok':(sum>100?'bad':'warn');
-  el.innerHTML=`<b>Сумма весов:</b> <span class="${cls}">${sum}%</span>${sum===100?'':' <span class="muted">Для корректного балльного расчета желательно 100%.</span>'}`;
+  const icon=sum===100?'🟢':(sum>100?'🔴':'🟡');
+  el.innerHTML=`<div class="weightStatus ${cls}"><span class="weightIcon">${icon}</span><div><b>Вес критериев</b><strong>${sum}%</strong></div><p>Рекомендуемая сумма весов — 100%. Фильтры в весе не участвуют.</p></div>`;
 }
 function renderCriteriaAdmin(){
   const select=document.getElementById('criteriaProfileSelect');
@@ -916,22 +956,33 @@ function renderCriteriaAdmin(){
   if(!select||!body||!addSelect)return;
   select.innerHTML=criteriaProfiles.map(p=>`<option value="${p.id}" ${p.id===criteriaActiveProfileId?'selected':''}>${p.name}</option>`).join('');
   const profile=activeCriteriaProfile();
-  if(meta)meta.innerHTML=`<b>${profile.name}</b><span> Тип объекта: ${profile.object_type||'custom'}</span><span> Критериев: ${criteriaList.length}</span>`;
+  const filterCount=criteriaList.filter(c=>c.enabled!==false&&c.criterion_type==='filter').length;
+  const scoreCount=criteriaList.filter(c=>c.enabled!==false&&c.criterion_type!=='filter').length;
+  if(meta)meta.innerHTML=`<b>${profile.name}</b><span> Тип объекта: ${profile.object_type||'custom'}</span><span> Критериев: ${criteriaList.length}</span><span> Фильтров: ${filterCount}</span><span> Балльных: ${scoreCount}</span>`;
   const used=new Set(criteriaList.map(c=>c.field_name));
   const available=availableSolutionFields().filter(x=>!used.has(x.field));
-  addSelect.innerHTML=available.map(x=>`<option value="${x.field}">${x.label} (${x.field})</option>`).join('')||'<option value="">Все доступные поля уже добавлены</option>';
+  const groups=[...new Set(available.map(x=>x.group||'Прочее'))];
+  addSelect.innerHTML=groups.map(g=>{
+    const opts=available.filter(x=>(x.group||'Прочее')===g).map(x=>`<option value="${x.field}">${x.label}</option>`).join('');
+    return opts?`<optgroup label="${g}">${opts}</optgroup>`:'';
+  }).join('')||'<option value="">Все доступные поля уже добавлены</option>';
   const rows=[...criteriaList].sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
   body.innerHTML=rows.map((c,i)=>{
     const realIndex=criteriaList.indexOf(c);
+    const meta=solutionFieldByName(c.field_name);
     const ops=['=','≠','>','<','≥','≤','Да','Нет','Содержит','Не содержит'];
-    return `<tr>
+    const isFilter=c.criterion_type==='filter';
+    const thresholdEditor=meta.dataType==='boolean'
+      ? `<select class="criteriaThreshold" data-i="${realIndex}"><option value="Да" ${thresholdValueToUi(c)==='Да'?'selected':''}>Да</option><option value="Нет" ${thresholdValueToUi(c)==='Нет'?'selected':''}>Нет</option></select>`
+      : `<input class="criteriaThreshold" data-i="${realIndex}" value="${String(c.threshold??'').replaceAll('"','&quot;')}">`;
+    return `<tr class="${isFilter?'criteriaFilterRow':''}">
       <td><input type="checkbox" class="criteriaEnabled" data-i="${realIndex}" ${c.enabled!==false?'checked':''}></td>
-      <td><input class="criteriaDisplayName" data-i="${realIndex}" value="${String(c.display_name||'').replaceAll('"','&quot;')}"></td>
-      <td><code>${c.field_name}</code><div class="muted">${solutionFieldByName(c.field_name).dataType}</div></td>
-      <td><select class="criteriaType" data-i="${realIndex}"><option value="filter" ${c.criterion_type==='filter'?'selected':''}>Фильтр</option><option value="score" ${c.criterion_type!=='filter'?'selected':''}>Балльный</option></select></td>
-      <td><input class="criteriaWeight" data-i="${realIndex}" type="number" min="0" max="100" step="1" value="${Number(c.weight||0)}"></td>
+      <td><input class="criteriaDisplayName" data-i="${realIndex}" value="${String(c.display_name||meta.label||'').replaceAll('"','&quot;')}"></td>
+      <td><div class="fieldHuman">${meta.label}</div><code>${c.field_name}</code><div class="muted">${dataTypeLabel(meta.dataType)}</div></td>
+      <td><select class="criteriaType" data-i="${realIndex}" onchange="onCriterionTypeChange(${realIndex},this.value)"><option value="filter" ${isFilter?'selected':''}>Фильтр</option><option value="score" ${!isFilter?'selected':''}>Балльный</option></select></td>
+      <td><div class="weightInputWrap"><input class="criteriaWeight" data-i="${realIndex}" type="number" min="0" max="100" step="1" value="${isFilter?0:Number(c.weight||0)}" ${isFilter?'disabled':''}><span>%</span></div></td>
       <td><select class="criteriaOperator" data-i="${realIndex}">${ops.map(op=>`<option value="${op}" ${String(c.operator||'=')===op?'selected':''}>${op}</option>`).join('')}</select></td>
-      <td><input class="criteriaThreshold" data-i="${realIndex}" value="${String(c.threshold??'').replaceAll('"','&quot;')}"></td>
+      <td>${thresholdEditor}</td>
       <td><button class="dangerBtn" onclick="removeCriterion(${realIndex})">Удалить</button></td>
     </tr>`;
   }).join('')||'<tr><td colspan="8" class="muted">В профиле пока нет критериев</td></tr>';
@@ -941,11 +992,30 @@ function renderCriteriaAdmin(){
 function collectCriteriaAdmin(){
   document.querySelectorAll('.criteriaEnabled').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].enabled=el.checked});
   document.querySelectorAll('.criteriaDisplayName').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].display_name=el.value.trim()});
-  document.querySelectorAll('.criteriaType').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].criterion_type=el.value});
-  document.querySelectorAll('.criteriaWeight').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].weight=Number(el.value||0)});
+  document.querySelectorAll('.criteriaType').forEach(el=>{
+    const i=+el.dataset.i;
+    if(criteriaList[i]){
+      criteriaList[i].criterion_type=el.value;
+      if(el.value==='filter')criteriaList[i].weight=0;
+    }
+  });
+  document.querySelectorAll('.criteriaWeight').forEach(el=>{
+    const i=+el.dataset.i;
+    if(criteriaList[i])criteriaList[i].weight=criteriaList[i].criterion_type==='filter'?0:Number(el.value||0);
+  });
   document.querySelectorAll('.criteriaOperator').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].operator=el.value});
-  document.querySelectorAll('.criteriaThreshold').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].threshold=el.value});
+  document.querySelectorAll('.criteriaThreshold').forEach(el=>{
+    const i=+el.dataset.i;
+    if(criteriaList[i])criteriaList[i].threshold=thresholdValueFromUi(criteriaList[i].field_name,el.value);
+  });
   criteriaList.forEach((c,i)=>c.sort_order=i+1);
+}
+function onCriterionTypeChange(i,value){
+  if(!criteriaList[i])return;
+  collectCriteriaAdmin();
+  criteriaList[i].criterion_type=value;
+  if(value==='filter')criteriaList[i].weight=0;
+  renderCriteriaAdmin();
 }
 async function saveCriteriaProfiles(){
   if(!isAdmin){alert('Доступно только Admin');return}
@@ -1015,6 +1085,7 @@ async function deleteCriteriaProfile(){
   }catch(e){alert('Ошибка удаления: '+(e.message||e))}
 }
 function addCriterion(){
+  collectCriteriaAdmin();
   const select=document.getElementById('criterionToAdd');
   const field=select?.value;
   if(!field)return;
