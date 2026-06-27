@@ -1020,3 +1020,13 @@ h3{font-size:16px;margin:18px 0 8px}
   .solutionHero,.solutionFields,.solutionChecks,.solutionSummary,.recommendationGrid{grid-template-columns:1fr}
   .solutionStepper{grid-template-columns:1fr 1fr}
 }
+
+/* v10.40.2 solution form fix */
+.solutionLevelsBox{display:grid;grid-template-columns:repeat(2,minmax(260px,1fr));gap:12px;margin-top:14px}
+.solutionLevelCard{border:1px solid #e5e7eb;border-radius:14px;background:#f8fafc;padding:12px}
+.solutionLevelCard>b{display:block;margin-bottom:10px;color:#0f172a;font-size:16px}
+.solutionLevelCard label{display:block;margin-bottom:8px}
+.solutionLevelCard label span{display:block;color:#667085;font-weight:800;font-size:13px;margin-bottom:5px}
+.solutionLevelCard input{width:100%;padding:10px;border:1px solid #d0d5dd;border-radius:10px;background:#fff}
+.solutionSubhead{margin:18px 0 8px;font-size:18px;color:#0f172a}
+@media(max-width:900px){.solutionLevelsBox{grid-template-columns:1fr}}

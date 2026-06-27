@@ -23,7 +23,7 @@
     <div>
       <div class="solutionEyebrow">ROBO Solution Advisor</div>
       <h2>Подбор решения</h2>
-      <p>Мастер предварительного подбора роботизированного решения под конкретный объект. В v10.40.1 подключен только интерфейс, расчет будет включен на следующем этапе.</p>
+      <p>Мастер предварительного подбора роботизированного решения под конкретный объект. В v10.40.2 подключен только интерфейс, расчет будет включен на следующем этапе.</p>
     </div>
     <div class="solutionProfileCard">
       <span>Используемый профиль</span>
@@ -54,20 +54,24 @@
     </section>
 
     <section class="solutionStep" data-step="2">
-      <h3>Параметры объекта</h3>
+      <h3>Параметры паркинга</h3>
+      <p class="muted">Сначала указываем базовую геометрию объекта. Количество уровней ограничено диапазоном от 1 до 5.</p>
       <div class="solutionFields">
-        <label><span>Название объекта</span><input id="solutionObjectName" placeholder="Например: Паркинг ЖК Север"></label>
-        <label><span>Адрес</span><input id="solutionObjectAddress" placeholder="Город, улица, объект"></label>
-        <label><span>Количество уровней</span><input id="solutionLevels" type="number" min="1" value="1"></label>
-        <label><span>Общая площадь, м²</span><input id="solutionArea" type="number" min="0" placeholder="Например: 12500"></label>
-        <label><span>Количество машиномест</span><input id="solutionParkingSpots" type="number" min="0" placeholder="Если площадь неизвестна"></label>
+        <label><span>Общая площадь паркинга, м²</span><input id="solutionArea" type="number" min="0" placeholder="Например: 12500"></label>
+        <label><span>Количество уровней</span><input id="solutionLevels" type="number" min="1" max="5" value="1" oninput="solutionRenderLevels()"></label>
       </div>
-      <div class="solutionHint">Если площадь не указана, в следующей версии система сможет использовать ориентир: 1 машиноместо = 15 м².</div>
+      <div id="solutionLevelsBox" class="solutionLevelsBox"></div>
+      <div class="solutionHint">Если известны только машиноместа, используем быстрый ориентир: 1 машиноместо = 15 м².</div>
       <div class="solutionNav"><button type="button" class="secondary" onclick="solutionGoStep(1)">Назад</button><button type="button" onclick="solutionGoStep(3)">Далее</button></div>
     </section>
 
     <section class="solutionStep" data-step="3">
-      <h3>Инфраструктура</h3>
+      <h3>Данные объекта и инфраструктура</h3>
+      <div class="solutionFields">
+        <label><span>Наименование объекта</span><input id="solutionObjectName" placeholder="Например: Паркинг ЖК Север"></label>
+        <label><span>Адрес</span><input id="solutionObjectAddress" placeholder="Город, улица, объект"></label>
+      </div>
+      <h4 class="solutionSubhead">Инфраструктура</h4>
       <p class="muted">Эти параметры будут использоваться движком подбора при оценке станции и автономности.</p>
       <div class="solutionChecks">
         <label><input type="checkbox" id="solutionStationPlace"> Есть место под станцию</label>
@@ -241,7 +245,7 @@
 
 </div></div>
 
-<!-- ROBO Catalog v10.40.1 PIM cloud -->
+<!-- ROBO Catalog v10.40.2 PIM cloud -->
 <script>
 const SUPABASE_URL="https://pwnpxxhrhxrtcxmcofcc.supabase.co", SUPABASE_ANON_KEY="sb_publishable_LIiJr0mPfi8iq16mVknHew_-pO0AYNS";
 const sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
@@ -330,6 +334,27 @@ function showSolutionView(){setMainView('solution');solutionGoStep(1)}
 function solutionGoStep(step){
   document.querySelectorAll('.solutionStepper button').forEach(b=>b.classList.toggle('active',Number(b.dataset.solutionStep)===step));
   document.querySelectorAll('.solutionStep').forEach(s=>s.classList.toggle('active',Number(s.dataset.step)===step));
+  if(step===2)solutionRenderLevels();
+}
+function solutionRenderLevels(){
+  const input=document.getElementById('solutionLevels');
+  const box=document.getElementById('solutionLevelsBox');
+  if(!input||!box)return;
+  let n=parseInt(input.value||'1',10);
+  if(isNaN(n)||n<1)n=1;
+  if(n>5)n=5;
+  input.value=n;
+  let html='';
+  for(let i=1;i<=n;i++){
+    const areaVal=document.getElementById(`solutionLevelArea_${i}`)?.value||'';
+    const spotsVal=document.getElementById(`solutionLevelSpots_${i}`)?.value||'';
+    html+=`<div class="solutionLevelCard">
+      <b>Уровень ${i}</b>
+      <label><span>Площадь уровня, м²</span><input id="solutionLevelArea_${i}" type="number" min="0" value="${areaVal}" placeholder="Например: 4200"></label>
+      <label><span>Кол-во машиномест</span><input id="solutionLevelSpots_${i}" type="number" min="0" value="${spotsVal}" placeholder="Например: 280"></label>
+    </div>`;
+  }
+  box.innerHTML=html;
 }
 function solutionMockResults(){
   const name=document.getElementById('solutionObjectName')?.value||'Подземный паркинг';
