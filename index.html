@@ -40,7 +40,7 @@
 <div id="loginModal" class="modal"><div class="loginPanel"><button class="close" onclick="closeLogin()">×</button><h2>Вход</h2><label>Email<input id="loginEmail" type="email" value="ereminks@gmail.com"></label><label>Пароль<input id="loginPassword" type="password"></label><button id="doLogin">Войти</button><p id="loginError"></p></div></div>
 <div id="adminModal" class="modal"><div class="adminPanel"><button class="close" onclick="closeAdmin()">×</button>
 <h2>Администрирование</h2>
-<div class="adminTabs"><button class="active" data-admin-tab="users">Пользователи</button><button data-admin-tab="manufacturers">Производители и страны</button></div>
+<div class="adminTabs"><button class="active" data-admin-tab="users">Пользователи</button><button data-admin-tab="manufacturers">Производители и страны</button><button data-admin-tab="criteria">Критерии подбора</button></div>
 <section id="adminUsers" class="adminSection">
 <h3>Пользователи</h3><p class="muted">Пользователь должен быть создан в Supabase Auth. Здесь назначается роль в profiles.</p><div class="adminAdd"><input id="profileId" placeholder="UUID пользователя"><input id="profileEmail" placeholder="email"><select id="profileRole"><option>viewer</option><option>editor</option><option>admin</option></select><button id="saveProfile">Сохранить роль</button></div><table class="profilesTable"><thead><tr><th>Email</th><th>UUID</th><th>Роль</th></tr></thead><tbody id="profilesBody"></tbody></table>
 </section>
@@ -49,6 +49,47 @@
 <div class="adminAdd manufacturersAdd"><input id="manufacturerName" placeholder="Производитель"><input id="manufacturerCountry" placeholder="Страна"><button id="saveManufacturer">Сохранить</button><button id="syncManufacturers">Заполнить из карточек</button></div>
 <table class="profilesTable"><thead><tr><th>Производитель</th><th>Страна</th><th>Роботов</th><th>Действия</th></tr></thead><tbody id="manufacturersBody"></tbody></table>
 </section>
+
+<section id="adminCriteria" class="adminSection hidden">
+  <h3>Критерии подбора</h3>
+  <p class="muted">Профили и критерии используются будущим модулем «Подбор решения». Критерии можно добавлять только из полей карточки робота.</p>
+
+  <div class="criteriaToolbar">
+    <label>Профиль
+      <select id="criteriaProfileSelect"></select>
+    </label>
+    <button id="createCriteriaProfile">Создать профиль</button>
+    <button id="deleteCriteriaProfile" class="dangerBtn">Удалить профиль</button>
+    <button id="saveCriteriaProfile">Сохранить критерии</button>
+  </div>
+
+  <div id="criteriaProfileMeta" class="criteriaMeta"></div>
+
+  <div class="criteriaAddBox">
+    <select id="criterionToAdd"></select>
+    <button id="addCriterionBtn">Добавить критерий</button>
+  </div>
+
+  <div class="criteriaTableWrap">
+    <table class="profilesTable criteriaTable">
+      <thead>
+        <tr>
+          <th>Исп.</th>
+          <th>Критерий</th>
+          <th>Поле карточки</th>
+          <th>Тип</th>
+          <th>Вес</th>
+          <th>Условие</th>
+          <th>Порог</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody id="criteriaBody"></tbody>
+    </table>
+  </div>
+  <p id="criteriaStatus" class="muted"></p>
+</section>
+
 </div></div>
 
 <!-- ROBO Catalog v9.25 PIM cloud -->
@@ -596,8 +637,13 @@ function setupAdminTabs(){
   document.querySelectorAll('.adminTabs button').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('.adminTabs button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    document.getElementById('adminUsers').classList.toggle('hidden',b.dataset.adminTab!=='users');
-    document.getElementById('adminManufacturers').classList.toggle('hidden',b.dataset.adminTab!=='manufacturers');if(b.dataset.adminTab==='manufacturers')renderManufacturerDirectory();
+    const tab=b.dataset.adminTab;
+    document.getElementById('adminUsers').classList.toggle('hidden',tab!=='users');
+    document.getElementById('adminManufacturers').classList.toggle('hidden',tab!=='manufacturers');
+    const criteriaSection=document.getElementById('adminCriteria');
+    if(criteriaSection)criteriaSection.classList.toggle('hidden',tab!=='criteria');
+    if(tab==='manufacturers')renderManufacturerDirectory();
+    if(tab==='criteria')loadCriteriaProfiles().then(renderCriteriaAdmin).catch(e=>{console.warn(e);renderCriteriaAdmin()});
   });
 }
 function manufacturerRows(){
@@ -725,13 +771,207 @@ async function deleteManufacturer(name){
 }
 
 
+
+const solutionFieldLibrary=[
+  {field:'wetCleaning',label:'Влажная уборка пола',dataType:'boolean',defaultType:'filter',defaultWeight:0,operator:'=',threshold:'true'},
+  {field:'objParking',label:'ROBO-Аналитика: Подземный паркинг',dataType:'score03',defaultType:'score',defaultWeight:20,operator:'>=',threshold:'2'},
+  {field:'roboRating',label:'ROBO Rating',dataType:'number',defaultType:'score',defaultWeight:10,operator:'>=',threshold:'7'},
+  {field:'productivity',label:'Производительность, м²/ч',dataType:'number',defaultType:'score',defaultWeight:10,operator:'>=',threshold:'600'},
+  {field:'cleaningWidth',label:'Ширина уборки, мм',dataType:'number',defaultType:'score',defaultWeight:10,operator:'>=',threshold:'500'},
+  {field:'height',label:'Высота робота, мм',dataType:'number',defaultType:'score',defaultWeight:10,operator:'>=',threshold:'1000'},
+  {field:'cleanWater_dirtyWater',label:'Раздельные баки чистой/грязной воды, л',dataType:'number_pair',defaultType:'score',defaultWeight:10,operator:'>=',threshold:'50'},
+  {field:'dock3in1',label:'Док-станция 3в1',dataType:'boolean',defaultType:'score',defaultWeight:10,operator:'=',threshold:'true'},
+  {field:'warningBeacon',label:'Проблесковый маячок',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  {field:'safetyProjection',label:'Светосигнальная аппаратура / проекция зон безопасности',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  {field:'freeParkingSpotAlgorithm',label:'Алгоритм уборки свободных машиномест',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'}
+];
+function defaultParkingProfile(){
+  return {
+    id:'parking',
+    name:'Подземный паркинг',
+    objectType:'parking',
+    criteria:solutionFieldLibrary.map((x,i)=>({
+      id:x.field,
+      field:x.field,
+      label:x.label,
+      dataType:x.dataType,
+      enabled:true,
+      type:x.defaultType,
+      weight:x.defaultWeight,
+      operator:x.operator,
+      threshold:x.threshold,
+      sort:i+1
+    }))
+  };
+}
+let criteriaProfiles=[];
+let criteriaActiveProfileId='parking';
+let criteriaStorageMode='supabase';
+
+function normalizeCriteriaProfile(p){
+  if(!p)return null;
+  const data=p.data||p;
+  return {
+    id:String(p.id||data.id||('profile_'+Date.now())),
+    name:String(p.name||data.name||'Новый профиль'),
+    objectType:String(p.object_type||data.objectType||data.object_type||'custom'),
+    criteria:Array.isArray(data.criteria)?data.criteria:[]
+  };
+}
+function localCriteriaProfiles(){
+  try{return JSON.parse(localStorage.getItem('robo_solution_profiles_v1')||'[]').map(normalizeCriteriaProfile).filter(Boolean)}
+  catch(e){return []}
+}
+function saveLocalCriteriaProfiles(){
+  localStorage.setItem('robo_solution_profiles_v1',JSON.stringify(criteriaProfiles));
+}
+async function loadCriteriaProfiles(){
+  criteriaStorageMode='supabase';
+  let profiles=[];
+  try{
+    const {data,error}=await sbClient.from('solution_profiles').select('*').order('name');
+    if(error)throw error;
+    profiles=(data||[]).map(normalizeCriteriaProfile).filter(Boolean);
+  }catch(e){
+    criteriaStorageMode='local';
+    profiles=localCriteriaProfiles();
+  }
+  if(!profiles.length){
+    profiles=[defaultParkingProfile()];
+    criteriaProfiles=profiles;
+    if(criteriaStorageMode==='local')saveLocalCriteriaProfiles();
+    else{
+      try{await saveCriteriaProfileToCloud(profiles[0])}catch(e){criteriaStorageMode='local';saveLocalCriteriaProfiles()}
+    }
+  }else criteriaProfiles=profiles;
+  if(!criteriaProfiles.find(p=>p.id===criteriaActiveProfileId))criteriaActiveProfileId=criteriaProfiles[0]?.id||'parking';
+}
+async function saveCriteriaProfileToCloud(profile){
+  const row={id:profile.id,name:profile.name,object_type:profile.objectType,data:{criteria:profile.criteria}};
+  const {error}=await sbClient.from('solution_profiles').upsert(row);
+  if(error)throw error;
+}
+async function deleteCriteriaProfileFromCloud(id){
+  const {error}=await sbClient.from('solution_profiles').delete().eq('id',id);
+  if(error)throw error;
+}
+function activeCriteriaProfile(){return criteriaProfiles.find(p=>p.id===criteriaActiveProfileId)||criteriaProfiles[0]||defaultParkingProfile()}
+function fieldMeta(field){return solutionFieldLibrary.find(x=>x.field===field)||{}}
+function renderCriteriaAdmin(){
+  const select=document.getElementById('criteriaProfileSelect');
+  const body=document.getElementById('criteriaBody');
+  const addSelect=document.getElementById('criterionToAdd');
+  const status=document.getElementById('criteriaStatus');
+  const meta=document.getElementById('criteriaProfileMeta');
+  if(!select||!body||!addSelect)return;
+  select.innerHTML=criteriaProfiles.map(p=>`<option value="${p.id}" ${p.id===criteriaActiveProfileId?'selected':''}>${p.name}</option>`).join('');
+  const profile=activeCriteriaProfile();
+  if(meta)meta.innerHTML=`<b>${profile.name}</b><span> Тип объекта: ${profile.objectType||'—'}</span><span> Критериев: ${profile.criteria.length}</span>`;
+  const used=new Set((profile.criteria||[]).map(c=>c.field));
+  addSelect.innerHTML=solutionFieldLibrary.filter(x=>!used.has(x.field)).map(x=>`<option value="${x.field}">${x.label}</option>`).join('');
+  if(!addSelect.innerHTML)addSelect.innerHTML='<option value="">Все доступные поля уже добавлены</option>';
+  body.innerHTML=(profile.criteria||[]).sort((a,b)=>(a.sort||0)-(b.sort||0)).map((c,i)=>{
+    const meta=fieldMeta(c.field);
+    return `<tr>
+      <td><input type="checkbox" class="criteriaEnabled" data-i="${i}" ${c.enabled!==false?'checked':''}></td>
+      <td><b>${c.label||meta.label||c.field}</b></td>
+      <td><code>${c.field}</code><div class="muted">${c.dataType||meta.dataType||''}</div></td>
+      <td><select class="criteriaType" data-i="${i}"><option value="filter" ${c.type==='filter'?'selected':''}>Фильтр</option><option value="score" ${c.type!=='filter'?'selected':''}>Балльный</option></select></td>
+      <td><input class="criteriaWeight" data-i="${i}" type="number" min="0" max="100" step="1" value="${Number(c.weight||0)}"></td>
+      <td><select class="criteriaOperator" data-i="${i}">${['=','>=','<=','>','<','!='].map(op=>`<option value="${op}" ${String(c.operator||'=')===op?'selected':''}>${op}</option>`).join('')}</select></td>
+      <td><input class="criteriaThreshold" data-i="${i}" value="${c.threshold??''}"></td>
+      <td><button class="dangerBtn" onclick="removeCriterion(${i})">Удалить</button></td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="8" class="muted">В профиле пока нет критериев</td></tr>';
+  if(status)status.textContent=criteriaStorageMode==='supabase'
+    ? 'Критерии сохраняются в Supabase.'
+    : 'Внимание: таблица solution_profiles пока недоступна. Критерии временно сохраняются в браузере. Выполните SQL-файл из архива.';
+}
+function collectCriteriaAdmin(){
+  const profile=activeCriteriaProfile();
+  if(!profile)return null;
+  document.querySelectorAll('.criteriaEnabled').forEach(el=>{const i=+el.dataset.i;if(profile.criteria[i])profile.criteria[i].enabled=el.checked});
+  document.querySelectorAll('.criteriaType').forEach(el=>{const i=+el.dataset.i;if(profile.criteria[i])profile.criteria[i].type=el.value});
+  document.querySelectorAll('.criteriaWeight').forEach(el=>{const i=+el.dataset.i;if(profile.criteria[i])profile.criteria[i].weight=Number(el.value||0)});
+  document.querySelectorAll('.criteriaOperator').forEach(el=>{const i=+el.dataset.i;if(profile.criteria[i])profile.criteria[i].operator=el.value});
+  document.querySelectorAll('.criteriaThreshold').forEach(el=>{const i=+el.dataset.i;if(profile.criteria[i])profile.criteria[i].threshold=el.value});
+  return profile;
+}
+async function saveCriteriaProfiles(){
+  if(!isAdmin){alert('Доступно только Admin');return}
+  const profile=collectCriteriaAdmin();
+  if(!profile)return;
+  try{
+    if(criteriaStorageMode==='supabase')await saveCriteriaProfileToCloud(profile);
+    else saveLocalCriteriaProfiles();
+    await loadCriteriaProfiles();
+    renderCriteriaAdmin();
+    alert('Критерии сохранены');
+  }catch(e){
+    alert('Ошибка сохранения критериев: '+(e.message||e));
+  }
+}
+async function createCriteriaProfile(){
+  if(!isAdmin){alert('Доступно только Admin');return}
+  const name=prompt('Название нового профиля подбора');
+  if(!name)return;
+  const id='profile_'+Date.now();
+  const profile={id,name,objectType:'custom',criteria:[]};
+  criteriaProfiles.push(profile);
+  criteriaActiveProfileId=id;
+  try{if(criteriaStorageMode==='supabase')await saveCriteriaProfileToCloud(profile);else saveLocalCriteriaProfiles()}
+  catch(e){criteriaStorageMode='local';saveLocalCriteriaProfiles()}
+  renderCriteriaAdmin();
+}
+async function deleteCriteriaProfile(){
+  if(!isAdmin){alert('Доступно только Admin');return}
+  const profile=activeCriteriaProfile();
+  if(!profile)return;
+  if(!confirm(`Удалить профиль «${profile.name}»?`))return;
+  criteriaProfiles=criteriaProfiles.filter(p=>p.id!==profile.id);
+  try{if(criteriaStorageMode==='supabase')await deleteCriteriaProfileFromCloud(profile.id);else saveLocalCriteriaProfiles()}
+  catch(e){criteriaStorageMode='local';saveLocalCriteriaProfiles()}
+  if(!criteriaProfiles.length)criteriaProfiles=[defaultParkingProfile()];
+  criteriaActiveProfileId=criteriaProfiles[0].id;
+  if(criteriaStorageMode==='local')saveLocalCriteriaProfiles();
+  renderCriteriaAdmin();
+}
+function addCriterion(){
+  const profile=activeCriteriaProfile();
+  const select=document.getElementById('criterionToAdd');
+  const field=select?.value;
+  if(!profile||!field)return;
+  const meta=fieldMeta(field);
+  if(!meta.field){alert('Критерий можно добавить только из базы полей карточки робота');return}
+  if(profile.criteria.some(c=>c.field===field)){alert('Такой критерий уже есть в профиле');return}
+  profile.criteria.push({
+    id:field,field,label:meta.label,dataType:meta.dataType,enabled:true,type:meta.defaultType,
+    weight:meta.defaultWeight,operator:meta.operator,threshold:meta.threshold,sort:profile.criteria.length+1
+  });
+  renderCriteriaAdmin();
+}
+function removeCriterion(i){
+  const profile=activeCriteriaProfile();
+  if(!profile)return;
+  profile.criteria.splice(i,1);
+  renderCriteriaAdmin();
+}
+
 function closeAdmin(){document.getElementById('adminModal').classList.remove('open')}onSafe('adminBtn',async()=>{
   setupAdminTabs();
   try{await loadProfiles()}catch(e){console.warn('profiles load failed',e)}
   try{await loadManufacturerDirectory();renderManufacturerDirectory()}catch(e){console.warn('manufacturer directory render failed',e)}
+  try{await loadCriteriaProfiles()}catch(e){console.warn('criteria profiles load failed',e)}
   const modal=document.getElementById('adminModal');if(modal)modal.classList.add('open');
 });async function loadProfiles(){const {data,error}=await sbClient.from('profiles').select('id,email,role').order('email');if(error){alert(error.message);return}document.getElementById('profilesBody').innerHTML=(data||[]).map(p=>`<tr><td>${p.email||''}</td><td>${p.id}</td><td>${p.role}</td></tr>`).join('')}onSafe('saveManufacturer',saveManufacturer);onSafe('syncManufacturers',syncManufacturersFromCards);
 onSafe('saveProfile',async()=>{const id=document.getElementById('profileId').value.trim(),email=document.getElementById('profileEmail').value.trim(),role=document.getElementById('profileRole').value;if(!id||!email)return alert('Укажите UUID и email');const {error}=await sbClient.from('profiles').upsert({id,email,role});if(error)return alert(error.message);await loadProfiles()});
+
+onSafe('criteriaProfileSelect',()=>{criteriaActiveProfileId=document.getElementById('criteriaProfileSelect').value;renderCriteriaAdmin()});
+onSafe('createCriteriaProfile',createCriteriaProfile);
+onSafe('deleteCriteriaProfile',deleteCriteriaProfile);
+onSafe('saveCriteriaProfile',saveCriteriaProfiles);
+onSafe('addCriterionBtn',addCriterion);
+
 initAuth();
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){['compareModal','card','loginModal','adminModal'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('open')});currentId=null}});
 window.addEventListener('error',e=>console.error('ROBO Catalog JS error:',e.message,e.filename,e.lineno));

@@ -907,3 +907,18 @@ h3{font-size:16px;margin:18px 0 8px}
   .mobileCatalogView{display:block!important}
   .mobileCards{display:grid!important;gap:12px;padding:0 14px 18px;min-height:120px}
 }
+
+/* v10.20 Criteria Admin */
+.criteriaToolbar{display:grid;grid-template-columns:2fr auto auto auto;gap:8px;align-items:end;margin:12px 0}
+.criteriaToolbar label{font-size:13px;color:#667085;font-weight:700}
+.criteriaMeta{display:flex;gap:14px;flex-wrap:wrap;background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:10px;margin:8px 0 12px;color:#475569}
+.criteriaAddBox{display:grid;grid-template-columns:1fr auto;gap:8px;margin:12px 0}
+.criteriaTableWrap{overflow:auto;border:1px solid #e5e7eb;border-radius:12px;background:#fff}
+.criteriaTable{min-width:980px}
+.criteriaTable input[type="checkbox"]{width:auto}
+.criteriaTable input,.criteriaTable select{width:100%;min-width:72px}
+.criteriaTable code{background:#f1f5f9;border-radius:6px;padding:2px 5px;color:#0f766e}
+.dangerBtn{border-color:#fecaca;color:#991b1b;background:#fff5f5}
+@media(max-width:900px){
+  .criteriaToolbar,.criteriaAddBox{grid-template-columns:1fr}
+}
