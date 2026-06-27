@@ -50,25 +50,32 @@
 <table class="profilesTable"><thead><tr><th>Производитель</th><th>Страна</th><th>Роботов</th><th>Действия</th></tr></thead><tbody id="manufacturersBody"></tbody></table>
 </section>
 
+
 <section id="adminCriteria" class="adminSection hidden">
   <h3>Критерии подбора</h3>
-  <p class="muted">Профили и критерии используются будущим модулем «Подбор решения». Критерии можно добавлять только из полей карточки робота.</p>
+  <p class="muted">Профили и критерии подбора хранятся в Supabase в таблицах solution_profiles и solution_criteria. Критерий можно добавить только из полей карточки робота.</p>
 
-  <div class="criteriaToolbar">
+  <div class="criteriaToolbar criteriaToolbarV1030">
     <label>Профиль
       <select id="criteriaProfileSelect"></select>
     </label>
-    <button id="createCriteriaProfile">Создать профиль</button>
-    <button id="deleteCriteriaProfile" class="dangerBtn">Удалить профиль</button>
-    <button id="saveCriteriaProfile">Сохранить критерии</button>
+    <button id="createCriteriaProfile">Создать</button>
+    <button id="renameCriteriaProfile">Переименовать</button>
+    <button id="copyCriteriaProfile">Копировать</button>
+    <button id="deleteCriteriaProfile" class="dangerBtn">Удалить</button>
+    <button id="saveCriteriaProfile">Сохранить</button>
   </div>
 
   <div id="criteriaProfileMeta" class="criteriaMeta"></div>
 
-  <div class="criteriaAddBox">
+  <div class="criteriaAddBox criteriaAddBoxV1030">
     <select id="criterionToAdd"></select>
     <button id="addCriterionBtn">Добавить критерий</button>
+    <button id="sortCriteriaName">Сортировать А→Я</button>
+    <button id="checkCriteriaProfile">Проверить профиль</button>
   </div>
+
+  <div id="criteriaWeightSummary" class="criteriaWeightSummary"></div>
 
   <div class="criteriaTableWrap">
     <table class="profilesTable criteriaTable">
@@ -90,9 +97,10 @@
   <p id="criteriaStatus" class="muted"></p>
 </section>
 
+
 </div></div>
 
-<!-- ROBO Catalog v9.25 PIM cloud -->
+<!-- ROBO Catalog v10.30 PIM cloud -->
 <script>
 const SUPABASE_URL="https://pwnpxxhrhxrtcxmcofcc.supabase.co", SUPABASE_ANON_KEY="sb_publishable_LIiJr0mPfi8iq16mVknHew_-pO0AYNS";
 const sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
@@ -772,91 +780,133 @@ async function deleteManufacturer(name){
 
 
 
-const solutionFieldLibrary=[
-  {field:'wetCleaning',label:'Влажная уборка пола',dataType:'boolean',defaultType:'filter',defaultWeight:0,operator:'=',threshold:'true'},
-  {field:'objParking',label:'ROBO-Аналитика: Подземный паркинг',dataType:'score03',defaultType:'score',defaultWeight:20,operator:'>=',threshold:'2'},
-  {field:'roboRating',label:'ROBO Rating',dataType:'number',defaultType:'score',defaultWeight:10,operator:'>=',threshold:'7'},
-  {field:'productivity',label:'Производительность, м²/ч',dataType:'number',defaultType:'score',defaultWeight:10,operator:'>=',threshold:'600'},
-  {field:'cleaningWidth',label:'Ширина уборки, мм',dataType:'number',defaultType:'score',defaultWeight:10,operator:'>=',threshold:'500'},
-  {field:'height',label:'Высота робота, мм',dataType:'number',defaultType:'score',defaultWeight:10,operator:'>=',threshold:'1000'},
-  {field:'cleanWater_dirtyWater',label:'Раздельные баки чистой/грязной воды, л',dataType:'number_pair',defaultType:'score',defaultWeight:10,operator:'>=',threshold:'50'},
-  {field:'dock3in1',label:'Док-станция 3в1',dataType:'boolean',defaultType:'score',defaultWeight:10,operator:'=',threshold:'true'},
-  {field:'warningBeacon',label:'Проблесковый маячок',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
-  {field:'safetyProjection',label:'Светосигнальная аппаратура / проекция зон безопасности',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
-  {field:'freeParkingSpotAlgorithm',label:'Алгоритм уборки свободных машиномест',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'}
-];
-function defaultParkingProfile(){
-  return {
-    id:'parking',
-    name:'Подземный паркинг',
-    objectType:'parking',
-    criteria:solutionFieldLibrary.map((x,i)=>({
-      id:x.field,
-      field:x.field,
-      label:x.label,
-      dataType:x.dataType,
-      enabled:true,
-      type:x.defaultType,
-      weight:x.defaultWeight,
-      operator:x.operator,
-      threshold:x.threshold,
-      sort:i+1
-    }))
-  };
-}
-let criteriaProfiles=[];
-let criteriaActiveProfileId='parking';
-let criteriaStorageMode='supabase';
 
-function normalizeCriteriaProfile(p){
-  if(!p)return null;
-  const data=p.data||p;
-  return {
-    id:String(p.id||data.id||('profile_'+Date.now())),
-    name:String(p.name||data.name||'Новый профиль'),
-    objectType:String(p.object_type||data.objectType||data.object_type||'custom'),
-    criteria:Array.isArray(data.criteria)?data.criteria:[]
-  };
+const solutionFieldMeta={
+  wetCleaning:{label:'Влажная уборка пола',dataType:'boolean',defaultType:'filter',defaultWeight:0,operator:'=',threshold:'true'},
+  sweeping:{label:'Функция подметания',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  vacuum:{label:'Функция вакуумного пылесоса',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  flatDryWaste:{label:'Сбор плоского сухого мусора',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  pad:{label:'Функция ПАД',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  objParking:{label:'ROBO-Аналитика: Подземный паркинг',dataType:'score03',defaultType:'score',defaultWeight:20,operator:'≥',threshold:'2'},
+  roboRating:{label:'ROBO Rating',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'7'},
+  productivity:{label:'Производительность, м²/ч',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'600'},
+  cleaningWidth:{label:'Ширина уборки, мм',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'500'},
+  height:{label:'Высота робота, мм',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'1000'},
+  cleanWater:{label:'Бак чистой воды, л',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'50'},
+  dirtyWater:{label:'Бак грязной воды, л',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'50'},
+  cleanWater_dirtyWater:{label:'Раздельные баки чистой/грязной воды, л',dataType:'number_pair',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'50'},
+  dock3in1:{label:'Док-станция 3в1',dataType:'boolean',defaultType:'score',defaultWeight:10,operator:'=',threshold:'true'},
+  warningBeacon:{label:'Проблесковый маячок',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  safetyProjection:{label:'Светосигнальная аппаратура / проекция зон безопасности',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  freeParkingSpotAlgorithm:{label:'Алгоритм уборки свободных машиномест',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  safetyBumper:{label:'Бампер безопасности',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
+  navigationType:{label:'Тип навигации',dataType:'text',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:''},
+  crowdWork:{label:'Работа в толпе',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
+  elevatorIntegration:{label:'Интеграция с лифтом',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
+  fmsRobo:{label:'Подключение к FMS.ROBO',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
+  chargingStation:{label:'Электрозарядная станция',dataType:'text',defaultType:'score',defaultWeight:5,operator:'=',threshold:'Да'},
+  length:{label:'Длина, мм',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:''},
+  widthSize:{label:'Ширина робота, мм',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:''},
+  weight:{label:'Масса, кг',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≤',threshold:''},
+  wasteContainer:{label:'Контейнер / бункер мусора, л',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:''},
+  brushType:{label:'Тип моющего узла',dataType:'text',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:''}
+};
+const solutionKnownCardFields=[
+  'wetCleaning','sweeping','vacuum','flatDryWaste','pad',
+  'objParking','roboRating','productivity','cleaningWidth','height','cleanWater','dirtyWater','cleanWater_dirtyWater',
+  'dock3in1','warningBeacon','safetyProjection','freeParkingSpotAlgorithm','safetyBumper',
+  'navigationType','crowdWork','elevatorIntegration','fmsRobo','chargingStation',
+  'length','widthSize','weight','wasteContainer','brushType'
+];
+let criteriaProfiles=[];
+let criteriaList=[];
+let criteriaActiveProfileId='parking';
+let criteriaSortDir='asc';
+
+function availableSolutionFields(){
+  const keys=new Set(solutionKnownCardFields);
+  robots.forEach(r=>Object.keys(r||{}).forEach(k=>{
+    if(k && !['id','image','imagePath','gallery','files','history'].includes(k))keys.add(k);
+  }));
+  return [...keys].map(k=>{
+    const m=solutionFieldMeta[k]||{};
+    return {
+      field:k,
+      label:m.label||k,
+      dataType:m.dataType||'text',
+      defaultType:m.defaultType||'score',
+      defaultWeight:m.defaultWeight||0,
+      operator:m.operator||'=',
+      threshold:m.threshold||''
+    };
+  }).sort((a,b)=>a.label.localeCompare(b.label,'ru'));
 }
-function localCriteriaProfiles(){
-  try{return JSON.parse(localStorage.getItem('robo_solution_profiles_v1')||'[]').map(normalizeCriteriaProfile).filter(Boolean)}
-  catch(e){return []}
+function solutionFieldByName(field){return availableSolutionFields().find(x=>x.field===field)||{field,label:field,dataType:'text',defaultType:'score',defaultWeight:0,operator:'=',threshold:''}}
+function defaultParkingCriteria(){
+  const fields=['wetCleaning','objParking','roboRating','productivity','cleaningWidth','height','cleanWater_dirtyWater','dock3in1','warningBeacon','safetyProjection','freeParkingSpotAlgorithm'];
+  return fields.map((f,i)=>{
+    const m=solutionFieldByName(f);
+    return {id:null,profile_id:'parking',field_name:f,display_name:m.label,criterion_type:m.defaultType,weight:m.defaultWeight,operator:m.operator,threshold:m.threshold,enabled:true,sort_order:i+1};
+  });
 }
-function saveLocalCriteriaProfiles(){
-  localStorage.setItem('robo_solution_profiles_v1',JSON.stringify(criteriaProfiles));
+function normalizeProfileRow(p){return {id:String(p.id),name:String(p.name||p.id),object_type:String(p.object_type||'custom')}}
+function normalizeCriterionRow(c,i=0){return {
+  id:c.id||null,
+  profile_id:c.profile_id||criteriaActiveProfileId,
+  field_name:c.field_name||c.field||'',
+  display_name:c.display_name||c.label||solutionFieldByName(c.field_name||c.field||'').label,
+  criterion_type:c.criterion_type||c.type||'score',
+  weight:Number(c.weight||0),
+  operator:c.operator||'=',
+  threshold:c.threshold??'',
+  enabled:c.enabled!==false,
+  sort_order:Number(c.sort_order||c.sort||i+1)
+}}
+async function ensureDefaultParkingProfile(){
+  try{
+    await sbClient.from('solution_profiles').upsert({id:'parking',name:'Подземный паркинг',object_type:'parking'});
+    const {data}=await sbClient.from('solution_criteria').select('id').eq('profile_id','parking').limit(1);
+    if(!data||!data.length){
+      const rows=defaultParkingCriteria().map(c=>({profile_id:'parking',field_name:c.field_name,display_name:c.display_name,criterion_type:c.criterion_type,weight:c.weight,operator:c.operator,threshold:String(c.threshold||''),enabled:c.enabled,sort_order:c.sort_order}));
+      await sbClient.from('solution_criteria').insert(rows);
+    }
+  }catch(e){console.warn('default parking seed failed',e)}
 }
 async function loadCriteriaProfiles(){
-  criteriaStorageMode='supabase';
-  let profiles=[];
   try{
-    const {data,error}=await sbClient.from('solution_profiles').select('*').order('name');
+    let {data,error}=await sbClient.from('solution_profiles').select('id,name,object_type').order('name');
     if(error)throw error;
-    profiles=(data||[]).map(normalizeCriteriaProfile).filter(Boolean);
+    if(!data||!data.length){await ensureDefaultParkingProfile();({data,error}=await sbClient.from('solution_profiles').select('id,name,object_type').order('name'));if(error)throw error;}
+    criteriaProfiles=(data||[]).map(normalizeProfileRow);
+    if(!criteriaProfiles.length){criteriaProfiles=[{id:'parking',name:'Подземный паркинг',object_type:'parking'}]}
+    if(!criteriaProfiles.find(p=>p.id===criteriaActiveProfileId))criteriaActiveProfileId=criteriaProfiles[0].id;
+    await loadCriteriaForProfile(criteriaActiveProfileId);
   }catch(e){
-    criteriaStorageMode='local';
-    profiles=localCriteriaProfiles();
+    console.error(e);
+    alert('Ошибка загрузки критериев из Supabase: '+(e.message||e));
+    criteriaProfiles=[{id:'parking',name:'Подземный паркинг',object_type:'parking'}];
+    criteriaActiveProfileId='parking';
+    criteriaList=defaultParkingCriteria();
   }
-  if(!profiles.length){
-    profiles=[defaultParkingProfile()];
-    criteriaProfiles=profiles;
-    if(criteriaStorageMode==='local')saveLocalCriteriaProfiles();
-    else{
-      try{await saveCriteriaProfileToCloud(profiles[0])}catch(e){criteriaStorageMode='local';saveLocalCriteriaProfiles()}
-    }
-  }else criteriaProfiles=profiles;
-  if(!criteriaProfiles.find(p=>p.id===criteriaActiveProfileId))criteriaActiveProfileId=criteriaProfiles[0]?.id||'parking';
 }
-async function saveCriteriaProfileToCloud(profile){
-  const row={id:profile.id,name:profile.name,object_type:profile.objectType,data:{criteria:profile.criteria}};
-  const {error}=await sbClient.from('solution_profiles').upsert(row);
-  if(error)throw error;
+async function loadCriteriaForProfile(profileId){
+  try{
+    const {data,error}=await sbClient.from('solution_criteria').select('*').eq('profile_id',profileId).order('sort_order');
+    if(error)throw error;
+    criteriaList=(data||[]).map(normalizeCriterionRow);
+  }catch(e){
+    console.warn('criteria load fallback',e);
+    criteriaList=profileId==='parking'?defaultParkingCriteria().map(normalizeCriterionRow):[];
+  }
 }
-async function deleteCriteriaProfileFromCloud(id){
-  const {error}=await sbClient.from('solution_profiles').delete().eq('id',id);
-  if(error)throw error;
+function activeCriteriaProfile(){return criteriaProfiles.find(p=>p.id===criteriaActiveProfileId)||criteriaProfiles[0]||{id:'parking',name:'Подземный паркинг',object_type:'parking'}}
+function criteriaWeightSum(){return criteriaList.filter(c=>c.enabled!==false && c.criterion_type!=='filter').reduce((s,c)=>s+Number(c.weight||0),0)}
+function renderWeightSummary(){
+  const el=document.getElementById('criteriaWeightSummary'); if(!el)return;
+  const sum=criteriaWeightSum();
+  const cls=sum===100?'ok':(sum>100?'bad':'warn');
+  el.innerHTML=`<b>Сумма весов:</b> <span class="${cls}">${sum}%</span>${sum===100?'':' <span class="muted">Для корректного балльного расчета желательно 100%.</span>'}`;
 }
-function activeCriteriaProfile(){return criteriaProfiles.find(p=>p.id===criteriaActiveProfileId)||criteriaProfiles[0]||defaultParkingProfile()}
-function fieldMeta(field){return solutionFieldLibrary.find(x=>x.field===field)||{}}
 function renderCriteriaAdmin(){
   const select=document.getElementById('criteriaProfileSelect');
   const body=document.getElementById('criteriaBody');
@@ -866,95 +916,145 @@ function renderCriteriaAdmin(){
   if(!select||!body||!addSelect)return;
   select.innerHTML=criteriaProfiles.map(p=>`<option value="${p.id}" ${p.id===criteriaActiveProfileId?'selected':''}>${p.name}</option>`).join('');
   const profile=activeCriteriaProfile();
-  if(meta)meta.innerHTML=`<b>${profile.name}</b><span> Тип объекта: ${profile.objectType||'—'}</span><span> Критериев: ${profile.criteria.length}</span>`;
-  const used=new Set((profile.criteria||[]).map(c=>c.field));
-  addSelect.innerHTML=solutionFieldLibrary.filter(x=>!used.has(x.field)).map(x=>`<option value="${x.field}">${x.label}</option>`).join('');
-  if(!addSelect.innerHTML)addSelect.innerHTML='<option value="">Все доступные поля уже добавлены</option>';
-  body.innerHTML=(profile.criteria||[]).sort((a,b)=>(a.sort||0)-(b.sort||0)).map((c,i)=>{
-    const meta=fieldMeta(c.field);
+  if(meta)meta.innerHTML=`<b>${profile.name}</b><span> Тип объекта: ${profile.object_type||'custom'}</span><span> Критериев: ${criteriaList.length}</span>`;
+  const used=new Set(criteriaList.map(c=>c.field_name));
+  const available=availableSolutionFields().filter(x=>!used.has(x.field));
+  addSelect.innerHTML=available.map(x=>`<option value="${x.field}">${x.label} (${x.field})</option>`).join('')||'<option value="">Все доступные поля уже добавлены</option>';
+  const rows=[...criteriaList].sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
+  body.innerHTML=rows.map((c,i)=>{
+    const realIndex=criteriaList.indexOf(c);
+    const ops=['=','≠','>','<','≥','≤','Да','Нет','Содержит','Не содержит'];
     return `<tr>
-      <td><input type="checkbox" class="criteriaEnabled" data-i="${i}" ${c.enabled!==false?'checked':''}></td>
-      <td><b>${c.label||meta.label||c.field}</b></td>
-      <td><code>${c.field}</code><div class="muted">${c.dataType||meta.dataType||''}</div></td>
-      <td><select class="criteriaType" data-i="${i}"><option value="filter" ${c.type==='filter'?'selected':''}>Фильтр</option><option value="score" ${c.type!=='filter'?'selected':''}>Балльный</option></select></td>
-      <td><input class="criteriaWeight" data-i="${i}" type="number" min="0" max="100" step="1" value="${Number(c.weight||0)}"></td>
-      <td><select class="criteriaOperator" data-i="${i}">${['=','>=','<=','>','<','!='].map(op=>`<option value="${op}" ${String(c.operator||'=')===op?'selected':''}>${op}</option>`).join('')}</select></td>
-      <td><input class="criteriaThreshold" data-i="${i}" value="${c.threshold??''}"></td>
-      <td><button class="dangerBtn" onclick="removeCriterion(${i})">Удалить</button></td>
+      <td><input type="checkbox" class="criteriaEnabled" data-i="${realIndex}" ${c.enabled!==false?'checked':''}></td>
+      <td><input class="criteriaDisplayName" data-i="${realIndex}" value="${String(c.display_name||'').replaceAll('"','&quot;')}"></td>
+      <td><code>${c.field_name}</code><div class="muted">${solutionFieldByName(c.field_name).dataType}</div></td>
+      <td><select class="criteriaType" data-i="${realIndex}"><option value="filter" ${c.criterion_type==='filter'?'selected':''}>Фильтр</option><option value="score" ${c.criterion_type!=='filter'?'selected':''}>Балльный</option></select></td>
+      <td><input class="criteriaWeight" data-i="${realIndex}" type="number" min="0" max="100" step="1" value="${Number(c.weight||0)}"></td>
+      <td><select class="criteriaOperator" data-i="${realIndex}">${ops.map(op=>`<option value="${op}" ${String(c.operator||'=')===op?'selected':''}>${op}</option>`).join('')}</select></td>
+      <td><input class="criteriaThreshold" data-i="${realIndex}" value="${String(c.threshold??'').replaceAll('"','&quot;')}"></td>
+      <td><button class="dangerBtn" onclick="removeCriterion(${realIndex})">Удалить</button></td>
     </tr>`;
   }).join('')||'<tr><td colspan="8" class="muted">В профиле пока нет критериев</td></tr>';
-  if(status)status.textContent=criteriaStorageMode==='supabase'
-    ? 'Критерии сохраняются в Supabase.'
-    : 'Внимание: таблица solution_profiles пока недоступна. Критерии временно сохраняются в браузере. Выполните SQL-файл из архива.';
+  if(status)status.textContent='Критерии хранятся в Supabase: solution_profiles + solution_criteria.';
+  renderWeightSummary();
 }
 function collectCriteriaAdmin(){
-  const profile=activeCriteriaProfile();
-  if(!profile)return null;
-  document.querySelectorAll('.criteriaEnabled').forEach(el=>{const i=+el.dataset.i;if(profile.criteria[i])profile.criteria[i].enabled=el.checked});
-  document.querySelectorAll('.criteriaType').forEach(el=>{const i=+el.dataset.i;if(profile.criteria[i])profile.criteria[i].type=el.value});
-  document.querySelectorAll('.criteriaWeight').forEach(el=>{const i=+el.dataset.i;if(profile.criteria[i])profile.criteria[i].weight=Number(el.value||0)});
-  document.querySelectorAll('.criteriaOperator').forEach(el=>{const i=+el.dataset.i;if(profile.criteria[i])profile.criteria[i].operator=el.value});
-  document.querySelectorAll('.criteriaThreshold').forEach(el=>{const i=+el.dataset.i;if(profile.criteria[i])profile.criteria[i].threshold=el.value});
-  return profile;
+  document.querySelectorAll('.criteriaEnabled').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].enabled=el.checked});
+  document.querySelectorAll('.criteriaDisplayName').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].display_name=el.value.trim()});
+  document.querySelectorAll('.criteriaType').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].criterion_type=el.value});
+  document.querySelectorAll('.criteriaWeight').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].weight=Number(el.value||0)});
+  document.querySelectorAll('.criteriaOperator').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].operator=el.value});
+  document.querySelectorAll('.criteriaThreshold').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].threshold=el.value});
+  criteriaList.forEach((c,i)=>c.sort_order=i+1);
 }
 async function saveCriteriaProfiles(){
   if(!isAdmin){alert('Доступно только Admin');return}
-  const profile=collectCriteriaAdmin();
-  if(!profile)return;
+  collectCriteriaAdmin();
   try{
-    if(criteriaStorageMode==='supabase')await saveCriteriaProfileToCloud(profile);
-    else saveLocalCriteriaProfiles();
-    await loadCriteriaProfiles();
+    await sbClient.from('solution_criteria').delete().eq('profile_id',criteriaActiveProfileId);
+    if(criteriaList.length){
+      const rows=criteriaList.map((c,i)=>({profile_id:criteriaActiveProfileId,field_name:c.field_name,display_name:c.display_name,criterion_type:c.criterion_type,weight:Number(c.weight||0),operator:c.operator,threshold:String(c.threshold??''),enabled:c.enabled!==false,sort_order:i+1}));
+      const {error}=await sbClient.from('solution_criteria').insert(rows);
+      if(error)throw error;
+    }
+    await loadCriteriaForProfile(criteriaActiveProfileId);
     renderCriteriaAdmin();
     alert('Критерии сохранены');
-  }catch(e){
-    alert('Ошибка сохранения критериев: '+(e.message||e));
-  }
+  }catch(e){alert('Ошибка сохранения критериев: '+(e.message||e))}
 }
 async function createCriteriaProfile(){
   if(!isAdmin){alert('Доступно только Admin');return}
   const name=prompt('Название нового профиля подбора');
   if(!name)return;
   const id='profile_'+Date.now();
-  const profile={id,name,objectType:'custom',criteria:[]};
-  criteriaProfiles.push(profile);
-  criteriaActiveProfileId=id;
-  try{if(criteriaStorageMode==='supabase')await saveCriteriaProfileToCloud(profile);else saveLocalCriteriaProfiles()}
-  catch(e){criteriaStorageMode='local';saveLocalCriteriaProfiles()}
-  renderCriteriaAdmin();
+  try{
+    const {error}=await sbClient.from('solution_profiles').insert({id,name,object_type:'custom'});
+    if(error)throw error;
+    criteriaActiveProfileId=id;
+    await loadCriteriaProfiles();
+    renderCriteriaAdmin();
+  }catch(e){alert('Ошибка создания профиля: '+(e.message||e))}
+}
+async function renameCriteriaProfile(){
+  if(!isAdmin){alert('Доступно только Admin');return}
+  const profile=activeCriteriaProfile();
+  const name=prompt('Новое название профиля',profile.name);
+  if(!name||name===profile.name)return;
+  try{
+    const {error}=await sbClient.from('solution_profiles').update({name,updated_at:new Date().toISOString()}).eq('id',profile.id);
+    if(error)throw error;
+    await loadCriteriaProfiles(); criteriaActiveProfileId=profile.id; renderCriteriaAdmin();
+  }catch(e){alert('Ошибка переименования: '+(e.message||e))}
+}
+async function copyCriteriaProfile(){
+  if(!isAdmin){alert('Доступно только Admin');return}
+  collectCriteriaAdmin();
+  const src=activeCriteriaProfile();
+  const name=prompt('Название копии профиля',src.name+' — копия');
+  if(!name)return;
+  const id='profile_'+Date.now();
+  try{
+    let {error}=await sbClient.from('solution_profiles').insert({id,name,object_type:src.object_type||'custom'});
+    if(error)throw error;
+    const rows=criteriaList.map((c,i)=>({profile_id:id,field_name:c.field_name,display_name:c.display_name,criterion_type:c.criterion_type,weight:Number(c.weight||0),operator:c.operator,threshold:String(c.threshold??''),enabled:c.enabled!==false,sort_order:i+1}));
+    if(rows.length){({error}=await sbClient.from('solution_criteria').insert(rows));if(error)throw error;}
+    criteriaActiveProfileId=id; await loadCriteriaProfiles(); renderCriteriaAdmin();
+  }catch(e){alert('Ошибка копирования: '+(e.message||e))}
 }
 async function deleteCriteriaProfile(){
   if(!isAdmin){alert('Доступно только Admin');return}
   const profile=activeCriteriaProfile();
   if(!profile)return;
   if(!confirm(`Удалить профиль «${profile.name}»?`))return;
-  criteriaProfiles=criteriaProfiles.filter(p=>p.id!==profile.id);
-  try{if(criteriaStorageMode==='supabase')await deleteCriteriaProfileFromCloud(profile.id);else saveLocalCriteriaProfiles()}
-  catch(e){criteriaStorageMode='local';saveLocalCriteriaProfiles()}
-  if(!criteriaProfiles.length)criteriaProfiles=[defaultParkingProfile()];
-  criteriaActiveProfileId=criteriaProfiles[0].id;
-  if(criteriaStorageMode==='local')saveLocalCriteriaProfiles();
-  renderCriteriaAdmin();
+  try{
+    const {error}=await sbClient.from('solution_profiles').delete().eq('id',profile.id);
+    if(error)throw error;
+    criteriaActiveProfileId='';
+    await loadCriteriaProfiles();
+    renderCriteriaAdmin();
+  }catch(e){alert('Ошибка удаления: '+(e.message||e))}
 }
 function addCriterion(){
-  const profile=activeCriteriaProfile();
   const select=document.getElementById('criterionToAdd');
   const field=select?.value;
-  if(!profile||!field)return;
-  const meta=fieldMeta(field);
-  if(!meta.field){alert('Критерий можно добавить только из базы полей карточки робота');return}
-  if(profile.criteria.some(c=>c.field===field)){alert('Такой критерий уже есть в профиле');return}
-  profile.criteria.push({
-    id:field,field,label:meta.label,dataType:meta.dataType,enabled:true,type:meta.defaultType,
-    weight:meta.defaultWeight,operator:meta.operator,threshold:meta.threshold,sort:profile.criteria.length+1
-  });
+  if(!field)return;
+  const meta=solutionFieldByName(field);
+  if(!meta.field){alert('Критерий можно добавить только из полей карточки робота');return}
+  if(criteriaList.some(c=>c.field_name===field)){alert('Такой критерий уже есть в профиле');return}
+  criteriaList.push({id:null,profile_id:criteriaActiveProfileId,field_name:field,display_name:meta.label,criterion_type:meta.defaultType,weight:meta.defaultWeight,operator:meta.operator,threshold:meta.threshold,enabled:true,sort_order:criteriaList.length+1});
   renderCriteriaAdmin();
 }
 function removeCriterion(i){
-  const profile=activeCriteriaProfile();
-  if(!profile)return;
-  profile.criteria.splice(i,1);
+  if(i<0||i>=criteriaList.length)return;
+  if(!confirm('Удалить критерий из профиля?'))return;
+  criteriaList.splice(i,1);
+  criteriaList.forEach((c,idx)=>c.sort_order=idx+1);
   renderCriteriaAdmin();
+}
+function sortCriteriaByName(){
+  collectCriteriaAdmin();
+  const dir=criteriaSortDir==='asc'?1:-1;
+  criteriaList.sort((a,b)=>dir*String(a.display_name||'').localeCompare(String(b.display_name||''),'ru'));
+  criteriaList.forEach((c,i)=>c.sort_order=i+1);
+  criteriaSortDir=criteriaSortDir==='asc'?'desc':'asc';
+  const btn=document.getElementById('sortCriteriaName');
+  if(btn)btn.textContent=criteriaSortDir==='asc'?'Сортировать А→Я':'Сортировать Я→А';
+  renderCriteriaAdmin();
+}
+function checkCriteriaProfile(){
+  collectCriteriaAdmin();
+  const messages=[];
+  const sum=criteriaWeightSum();
+  if(sum!==100)messages.push(`⚠ Сумма весов = ${sum}%, рекомендуется 100%.`);
+  const fields=criteriaList.map(c=>c.field_name);
+  const duplicates=fields.filter((f,i)=>fields.indexOf(f)!==i);
+  if(duplicates.length)messages.push('⚠ Есть дубли критериев: '+[...new Set(duplicates)].join(', '));
+  const available=new Set(availableSolutionFields().map(x=>x.field));
+  const missing=fields.filter(f=>!available.has(f));
+  if(missing.length)messages.push('⚠ Есть критерии без поля в карточке: '+missing.join(', '));
+  if(!criteriaList.some(c=>c.criterion_type==='filter'&&c.enabled!==false))messages.push('⚠ Нет обязательных фильтров.');
+  if(!messages.length)messages.push('✓ Профиль корректен.');
+  alert(messages.join('\n'));
 }
 
 function closeAdmin(){document.getElementById('adminModal').classList.remove('open')}onSafe('adminBtn',async()=>{
@@ -966,11 +1066,15 @@ function closeAdmin(){document.getElementById('adminModal').classList.remove('op
 });async function loadProfiles(){const {data,error}=await sbClient.from('profiles').select('id,email,role').order('email');if(error){alert(error.message);return}document.getElementById('profilesBody').innerHTML=(data||[]).map(p=>`<tr><td>${p.email||''}</td><td>${p.id}</td><td>${p.role}</td></tr>`).join('')}onSafe('saveManufacturer',saveManufacturer);onSafe('syncManufacturers',syncManufacturersFromCards);
 onSafe('saveProfile',async()=>{const id=document.getElementById('profileId').value.trim(),email=document.getElementById('profileEmail').value.trim(),role=document.getElementById('profileRole').value;if(!id||!email)return alert('Укажите UUID и email');const {error}=await sbClient.from('profiles').upsert({id,email,role});if(error)return alert(error.message);await loadProfiles()});
 
-onSafe('criteriaProfileSelect',()=>{criteriaActiveProfileId=document.getElementById('criteriaProfileSelect').value;renderCriteriaAdmin()});
+onSafe('criteriaProfileSelect',async()=>{criteriaActiveProfileId=document.getElementById('criteriaProfileSelect').value;await loadCriteriaForProfile(criteriaActiveProfileId);renderCriteriaAdmin()});
 onSafe('createCriteriaProfile',createCriteriaProfile);
+onSafe('renameCriteriaProfile',renameCriteriaProfile);
+onSafe('copyCriteriaProfile',copyCriteriaProfile);
 onSafe('deleteCriteriaProfile',deleteCriteriaProfile);
 onSafe('saveCriteriaProfile',saveCriteriaProfiles);
 onSafe('addCriterionBtn',addCriterion);
+onSafe('sortCriteriaName',sortCriteriaByName);
+onSafe('checkCriteriaProfile',checkCriteriaProfile);
 
 initAuth();
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){['compareModal','card','loginModal','adminModal'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('open')});currentId=null}});

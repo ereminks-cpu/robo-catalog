@@ -922,3 +922,16 @@ h3{font-size:16px;margin:18px 0 8px}
 @media(max-width:900px){
   .criteriaToolbar,.criteriaAddBox{grid-template-columns:1fr}
 }
+
+/* v10.30 Criteria Admin RDB */
+.criteriaToolbarV1030{grid-template-columns:2fr auto auto auto auto auto}
+.criteriaAddBoxV1030{grid-template-columns:1fr auto auto auto}
+.criteriaWeightSummary{margin:10px 0;padding:10px;border:1px solid #e5e7eb;border-radius:10px;background:#f8fafc}
+.criteriaWeightSummary span{font-weight:800}
+.criteriaWeightSummary .ok{color:#166534}
+.criteriaWeightSummary .warn{color:#a16207}
+.criteriaWeightSummary .bad{color:#b91c1c}
+.criteriaTable .criteriaDisplayName{min-width:210px}
+@media(max-width:1100px){
+  .criteriaToolbarV1030,.criteriaAddBoxV1030{grid-template-columns:1fr}
+}
