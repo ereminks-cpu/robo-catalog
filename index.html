@@ -23,7 +23,7 @@
     <div>
       <div class="solutionEyebrow">ROBO Solution Advisor</div>
       <h2>Подбор решения</h2>
-      <p>Мастер предварительного подбора роботизированного решения под конкретный объект. В v10.40.4 подключен только интерфейс, расчет будет включен на следующем этапе.</p>
+      <p>Мастер предварительного подбора роботизированного решения под конкретный объект. В v10.50 подключен только интерфейс, расчет будет включен на следующем этапе.</p>
     </div>
     <div class="solutionProfileCard">
       <span>Используемый профиль</span>
@@ -88,16 +88,16 @@
         <label><input type="radio" name="solutionFrequency" value="night" onchange="solutionUpdateSummary()"> Только ночь</label>
         <label><input type="radio" name="solutionFrequency" value="day_night" onchange="solutionUpdateSummary()"> День + ночь</label>
       </div>
-      <div class="solutionNav"><button type="button" class="secondary" onclick="solutionGoStep(2)">Назад</button><button type="button" onclick="solutionMockResults()">Показать пример заключения</button></div>
+      <div class="solutionNav"><button type="button" class="secondary" onclick="solutionGoStep(2)">Назад</button><button type="button" onclick="solutionRunEngine()">Подобрать решение</button></div>
     </section>
 
     <section class="solutionStep" data-step="4">
       <div class="solutionResultHeader">
         <div>
           <h3>ROBO Recommendation</h3>
-          <p class="muted">Демонстрационный экран результата. Расчет по реальным критериям будет подключен в v10.40.4.</p>
+          <p class="muted">Демонстрационный экран результата. Расчет по реальным критериям будет подключен в v10.50.</p>
         </div>
-        <div class="recommendationBadge">UI Preview</div>
+        <div class="recommendationBadge">Engine v1</div>
       </div>
 
       <div class="solutionSummary" id="solutionSummary">
@@ -107,63 +107,8 @@
         <div><span>Инфраструктура</span><b>—</b></div>
       </div>
 
-      <div class="recommendationGrid">
-        <article class="recommendationCard best">
-          <div class="rank">🥇</div>
-          <div class="recMain">
-            <h4>Лучшее решение</h4>
-            <b>Sparkoz RUBI-C</b>
-            <div class="stars">★★★★★</div>
-            <div class="match">96%</div>
-          </div>
-          <details open>
-            <summary>Почему подходит</summary>
-            <ul>
-              <li>Влажная уборка пола</li>
-              <li>Ширина уборки соответствует профилю</li>
-              <li>Раздельные баки подходят под паркинг</li>
-              <li>Док-станция 3в1</li>
-              <li>Проблесковый маячок и световая аппаратура</li>
-            </ul>
-          </details>
-        </article>
-
-        <article class="recommendationCard">
-          <div class="rank">🥈</div>
-          <div class="recMain">
-            <h4>Также подходит</h4>
-            <b>Gausium Scrubber 75</b>
-            <div class="stars">★★★★☆</div>
-            <div class="match">93%</div>
-          </div>
-          <details>
-            <summary>Почему подходит</summary>
-            <ul>
-              <li>Высокая производительность</li>
-              <li>Подходит для больших площадей</li>
-              <li>Хорошая ROBO-Аналитика для паркинга</li>
-            </ul>
-          </details>
-        </article>
-
-        <article class="recommendationCard">
-          <div class="rank">🥉</div>
-          <div class="recMain">
-            <h4>Допустимое решение</h4>
-            <b>Kärcher KIRA B50</b>
-            <div class="stars">★★★★☆</div>
-            <div class="match">90%</div>
-          </div>
-          <details>
-            <summary>Почему подходит</summary>
-            <ul>
-              <li>Влажная уборка пола</li>
-              <li>Подходит по базовым критериям</li>
-              <li>Требуется проверка отдельных признаков безопасности</li>
-            </ul>
-          </details>
-        </article>
-      </div>
+      <div id="solutionEngineStats" class="solutionEngineStats"></div>
+      <div id="solutionEngineResults" class="recommendationGrid"></div>
 
       <div class="solutionNav"><button type="button" class="secondary" onclick="solutionGoStep(3)">Назад</button><button type="button" onclick="solutionGoStep(1)">Новый подбор</button></div>
     </section>
@@ -254,7 +199,7 @@
 
 </div></div>
 
-<!-- ROBO Catalog v10.40.4 PIM cloud -->
+<!-- ROBO Catalog v10.50 PIM cloud -->
 <script>
 const SUPABASE_URL="https://pwnpxxhrhxrtcxmcofcc.supabase.co", SUPABASE_ANON_KEY="sb_publishable_LIiJr0mPfi8iq16mVknHew_-pO0AYNS";
 const sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
@@ -441,16 +386,146 @@ function solutionRenderLevels(){
   box.innerHTML=html;
   solutionUpdateSummary();
 }
-function solutionMockResults(){
+function solutionRobotName(r){
+  return [r.manufacturer,r.model].filter(Boolean).join(' ')||r.id||'Робот';
+}
+function solutionNum(v){return Number(String(v??'').replace(/\s/g,'').replace(',','.'))||0}
+function solutionBool(v){
+  if(v===true)return true;
+  const s=String(v??'').toLowerCase();
+  return ['true','1','да','yes','✓','есть'].includes(s);
+}
+function solutionFieldValue(robot,field){
+  if(field==='cleanWater_dirtyWater'){
+    return Math.min(solutionNum(robot.cleanWater),solutionNum(robot.dirtyWater));
+  }
+  if(field==='objParking')return solutionNum(robot.objParking||robot.parking||robot.objUndergroundParking);
+  return robot[field];
+}
+function solutionCriterionPass(robot,c){
+  const field=c.field_name||c.field;
+  const op=c.operator||'=';
+  const threshold=String(c.threshold??'');
+  const val=solutionFieldValue(robot,field);
+  const meta=solutionFieldByName(field);
+  if(meta.dataType==='boolean'){
+    const expected=threshold.toLowerCase()==='true'||threshold.toLowerCase()==='да'||threshold==='1';
+    return solutionBool(val)===expected;
+  }
+  if(meta.dataType==='multi_enum'){
+    const parts=thresholdParts(threshold);
+    if(!parts.length)return {ok:false,noData:true};
+    const v=String(val??'').trim();
+    if(!v)return {ok:false,noData:true};
+    return parts.some(p=>v.toLowerCase().includes(String(p).toLowerCase()));
+  }
+  const n=solutionNum(val), t=solutionNum(threshold);
+  if(['number','number_pair','score03'].includes(meta.dataType)){
+    if(!n && n!==0)return {ok:false,noData:true};
+    if(op==='≥'||op==='>=')return n>=t;
+    if(op==='≤'||op==='<=')return n<=t;
+    if(op==='>')return n>t;
+    if(op==='<')return n<t;
+    if(op==='≠'||op==='!=')return n!==t;
+    return n===t;
+  }
+  const str=String(val??'').toLowerCase();
+  if(!str)return {ok:false,noData:true};
+  const th=threshold.toLowerCase();
+  if(op==='Содержит'||op==='Любое')return str.includes(th);
+  if(op==='Не содержит')return !str.includes(th);
+  if(op==='≠'||op==='!=')return str!==th;
+  return str===th;
+}
+async function solutionLoadCriteria(){
+  try{
+    const {data:profiles,error:pErr}=await sbClient.from('solution_profiles').select('id,name,object_type').eq('id','parking').limit(1);
+    if(pErr)throw pErr;
+    const profile=(profiles&&profiles[0])||{id:'parking',name:'Подземный паркинг'};
+    const {data,error}=await sbClient.from('solution_criteria').select('*').eq('profile_id',profile.id).eq('enabled',true).order('sort_order');
+    if(error)throw error;
+    return {profile,criteria:data||[]};
+  }catch(e){
+    console.warn('solution criteria load failed',e);
+    alert('Не удалось загрузить критерии подбора из Supabase: '+(e.message||e));
+    return {profile:{id:'parking',name:'Подземный паркинг'},criteria:[]};
+  }
+}
+function solutionScoreRobot(robot,criteria){
+  const filters=criteria.filter(c=>c.criterion_type==='filter');
+  const scores=criteria.filter(c=>c.criterion_type!=='filter');
+  const passed=[], failed=[], noData=[];
+  for(const c of filters){
+    const res=solutionCriterionPass(robot,c);
+    const ok=typeof res==='object'?res.ok:res;
+    if(ok)passed.push(c);
+    else {
+      failed.push(c);
+      return {robot,excluded:true,score:0,passed,failed,noData,reason:c.display_name||c.field_name};
+    }
+  }
+  let totalWeight=0, gained=0;
+  for(const c of scores){
+    const w=solutionNum(c.weight);
+    totalWeight+=w;
+    const res=solutionCriterionPass(robot,c);
+    const ok=typeof res==='object'?res.ok:res;
+    const nd=typeof res==='object'&&res.noData;
+    if(ok){gained+=w;passed.push(c)}
+    else if(nd)noData.push(c);
+    else failed.push(c);
+  }
+  const score=totalWeight?Math.round(gained/totalWeight*100):0;
+  return {robot,excluded:false,score,passed,failed,noData};
+}
+function solutionLevelText(score){
+  if(score>=90)return ['Рекомендуем','★★★★★'];
+  if(score>=80)return ['Подходит','★★★★☆'];
+  if(score>=70)return ['Допустимо','★★★☆☆'];
+  return ['Низкое соответствие','★★☆☆☆'];
+}
+function solutionCriteriaList(items,icon){
+  if(!items.length)return '<li>—</li>';
+  return items.map(c=>`<li>${icon} ${c.display_name||c.field_name}</li>`).join('');
+}
+async function solutionRunEngine(){
+  const {profile,criteria}=await solutionLoadCriteria();
   const d=solutionCollectData();
-  const infra=[
-    ['station','станция'],
-    ['water','вода'],
-    ['drainage','канализация'],
-    ['internet','интернет']
-  ].map(x=>d.infra[x[0]]==='yes'?`✓ ${x[1]}`:(d.infra[x[0]]==='no'?`— ${x[1]}`:null)).filter(Boolean).join(', ')||'не указана';
   const el=document.getElementById('solutionSummary');
+  const infra=[
+    ['station','станция'],['water','вода'],['drainage','канализация'],['internet','интернет']
+  ].map(x=>d.infra[x[0]]==='yes'?`✓ ${x[1]}`:(d.infra[x[0]]==='no'?`— ${x[1]}`:null)).filter(Boolean).join(', ')||'не указана';
   if(el)el.innerHTML=`<div><span>Объект</span><b>${d.name}</b></div><div><span>Площадь</span><b>${d.totalArea?solutionFormatNumber(d.totalArea)+' м²':'—'}</b></div><div><span>Уровней</span><b>${d.levels}</b></div><div><span>Инфраструктура</span><b>${infra}</b></div><div><span>Периодичность</span><b>${d.frequency}</b></div>`;
+  const results=robots.map(r=>solutionScoreRobot(r,criteria));
+  const included=results.filter(x=>!x.excluded).sort((a,b)=>b.score-a.score);
+  const excluded=results.filter(x=>x.excluded);
+  const top=included.slice(0,6);
+  const stats=document.getElementById('solutionEngineStats');
+  if(stats)stats.innerHTML=`<div><span>Профиль</span><b>${profile.name||'Подземный паркинг'}</b></div><div><span>Критериев</span><b>${criteria.length}</b></div><div><span>Проверено роботов</span><b>${robots.length}</b></div><div><span>После фильтра</span><b>${included.length}</b></div><div><span>Исключено</span><b>${excluded.length}</b></div>`;
+  const container=document.getElementById('solutionEngineResults');
+  if(container){
+    container.innerHTML=top.map((x,i)=>{
+      const [level,stars]=solutionLevelText(x.score);
+      const medal=['🥇','🥈','🥉'][i]||'';
+      return `<article class="recommendationCard ${i===0?'best':''}">
+        <div class="rank">${medal||i+1}</div>
+        <div class="recMain">
+          <h4>${level}</h4>
+          <b>${solutionRobotName(x.robot)}</b>
+          <div class="stars">${stars}</div>
+          <div class="match">${x.score}%</div>
+        </div>
+        <details ${i===0?'open':''}>
+          <summary>Почему такой результат</summary>
+          <div class="explainCols">
+            <div><b>Выполнено</b><ul>${solutionCriteriaList(x.passed,'✔')}</ul></div>
+            <div><b>Не выполнено</b><ul>${solutionCriteriaList(x.failed,'✖')}</ul></div>
+            <div><b>Нет данных</b><ul>${solutionCriteriaList(x.noData,'?')}</ul></div>
+          </div>
+        </details>
+      </article>`;
+    }).join('') || '<div class="emptyResult">Нет роботов, прошедших обязательные фильтры.</div>';
+  }
   solutionGoStep(4);
 }
 function groupCount(arr,fn){const m={};arr.forEach(x=>{const k=fn(x)||'Не указано';m[k]=(m[k]||0)+1});return Object.entries(m).sort((a,b)=>b[1]-a[1])}
