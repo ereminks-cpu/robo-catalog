@@ -100,7 +100,7 @@
 
 </div></div>
 
-<!-- ROBO Catalog v10.32 PIM cloud -->
+<!-- ROBO Catalog v10.33 PIM cloud -->
 <script>
 const SUPABASE_URL="https://pwnpxxhrhxrtcxmcofcc.supabase.co", SUPABASE_ANON_KEY="sb_publishable_LIiJr0mPfi8iq16mVknHew_-pO0AYNS";
 const sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
@@ -782,14 +782,14 @@ async function deleteManufacturer(name){
 
 
 const solutionFieldMeta={
-  manufacturer:{label:'Производитель',group:'Паспорт',dataType:'multi_enum',optionsKey:'manufacturer',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
-  country:{label:'Страна',group:'Паспорт',dataType:'multi_enum',optionsKey:'country',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
-  model:{label:'Модель',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
-  type:{label:'Тип эксплуатации',group:'Паспорт',dataType:'multi_enum',optionsKey:'type',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
-  purpose:{label:'Назначение',group:'Паспорт',dataType:'multi_enum',optionsKey:'purpose',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
-  subtype:{label:'Подтип',group:'Паспорт',dataType:'multi_enum',optionsKey:'subtype',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
-  status:{label:'Статус',group:'Паспорт',dataType:'multi_enum',optionsKey:'status',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
-  link:{label:'Ссылка на модель',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''},
+  manufacturer:{label:'Производитель',group:'Паспорт',dataType:'multi_enum',optionsKey:'manufacturer',defaultType:'score',defaultWeight:0,operator:'Любое',threshold:''},
+  country:{label:'Страна',group:'Паспорт',dataType:'multi_enum',optionsKey:'country',defaultType:'score',defaultWeight:0,operator:'Любое',threshold:''},
+  model:{label:'Модель',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'Любое',threshold:''},
+  type:{label:'Тип эксплуатации',group:'Паспорт',dataType:'multi_enum',optionsKey:'type',defaultType:'score',defaultWeight:0,operator:'Любое',threshold:''},
+  purpose:{label:'Назначение',group:'Паспорт',dataType:'multi_enum',optionsKey:'purpose',defaultType:'score',defaultWeight:0,operator:'Любое',threshold:''},
+  subtype:{label:'Подтип',group:'Паспорт',dataType:'multi_enum',optionsKey:'subtype',defaultType:'score',defaultWeight:0,operator:'Любое',threshold:''},
+  status:{label:'Статус',group:'Паспорт',dataType:'multi_enum',optionsKey:'status',defaultType:'score',defaultWeight:0,operator:'Любое',threshold:''},
+  link:{label:'Ссылка на модель',group:'Паспорт',dataType:'text',defaultType:'score',defaultWeight:0,operator:'Любое',threshold:''},
 
   cleaningWidth:{label:'Ширина уборки, мм',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'500'},
   productivity:{label:'Производительность, м²/ч',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'600'},
@@ -801,7 +801,7 @@ const solutionFieldMeta={
   length:{label:'Длина, мм',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:''},
   widthSize:{label:'Ширина робота, мм',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:5,operator:'≥',threshold:''},
   height:{label:'Высота робота, мм',group:'Характеристики',dataType:'number',defaultType:'score',defaultWeight:10,operator:'≥',threshold:'1000'},
-  brushType:{label:'Тип моющего узла',group:'Характеристики',dataType:'multi_enum',optionsKey:'brushType',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:''},
+  brushType:{label:'Тип моющего узла',group:'Характеристики',dataType:'multi_enum',optionsKey:'brushType',defaultType:'score',defaultWeight:5,operator:'Любое',threshold:''},
 
   sweeping:{label:'Функция подметания',group:'Функции уборки',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
   vacuum:{label:'Функция вакуумного пылесоса',group:'Функции уборки',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
@@ -809,16 +809,16 @@ const solutionFieldMeta={
   flatDryWaste:{label:'Сбор плоского сухого мусора',group:'Функции уборки',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
   pad:{label:'Функция ПАД',group:'Функции уборки',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
 
-  navigationType:{label:'Тип навигации',group:'Навигация',dataType:'multi_enum',optionsKey:'navigationType',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:''},
-  crowdWork:{label:'Работа в толпе',group:'Навигация',dataType:'multi_enum',optionsKey:'crowdWork',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:'Да'},
-  elevatorIntegration:{label:'Интеграция с лифтом',group:'Навигация',dataType:'multi_enum',optionsKey:'elevatorIntegration',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:'Да'},
-  fmsRobo:{label:'Подключение к FMS.ROBO',group:'Навигация',dataType:'multi_enum',optionsKey:'fmsRobo',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:'Да'},
+  navigationType:{label:'Тип навигации',group:'Навигация',dataType:'multi_enum',optionsKey:'navigationType',defaultType:'score',defaultWeight:5,operator:'Любое',threshold:''},
+  crowdWork:{label:'Работа в толпе',group:'Навигация',dataType:'multi_enum',optionsKey:'crowdWork',defaultType:'score',defaultWeight:5,operator:'Любое',threshold:'Да'},
+  elevatorIntegration:{label:'Интеграция с лифтом',group:'Навигация',dataType:'multi_enum',optionsKey:'elevatorIntegration',defaultType:'score',defaultWeight:5,operator:'Любое',threshold:'Да'},
+  fmsRobo:{label:'Подключение к FMS.ROBO',group:'Навигация',dataType:'multi_enum',optionsKey:'fmsRobo',defaultType:'score',defaultWeight:5,operator:'Любое',threshold:'Да'},
 
   safetyBumper:{label:'Бампер безопасности',group:'Безопасность',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
   warningBeacon:{label:'Проблесковый маячок',group:'Безопасность',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
   safetyProjection:{label:'Светосигнальная аппаратура / проекция зон безопасности',group:'Безопасность',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
 
-  chargingStation:{label:'Электрозарядная станция',group:'Станция',dataType:'multi_enum',optionsKey:'yesNo',defaultType:'score',defaultWeight:5,operator:'Содержит',threshold:'Да'},
+  chargingStation:{label:'Электрозарядная станция',group:'Станция',dataType:'multi_enum',optionsKey:'yesNo',defaultType:'score',defaultWeight:5,operator:'Любое',threshold:'Да'},
   dock3in1:{label:'Док-станция 3в1',group:'Станция',dataType:'boolean',defaultType:'score',defaultWeight:10,operator:'=',threshold:'true'},
 
   freeParkingSpotAlgorithm:{label:'Алгоритм уборки свободных машиномест',group:'Алгоритмы',dataType:'boolean',defaultType:'score',defaultWeight:5,operator:'=',threshold:'true'},
@@ -836,7 +836,7 @@ const solutionFieldMeta={
   objWarehouse:{label:'ROBO-Аналитика — Склад',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'2'},
   objFoodservice:{label:'ROBO-Аналитика — Столовая/общепит',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'2'},
   objRetail:{label:'ROBO-Аналитика — Торговая площадь',group:'ROBO-Аналитика',dataType:'score03',defaultType:'score',defaultWeight:5,operator:'≥',threshold:'2'},
-  roboComment:{label:'Комментарий ROBO-Аналитики',group:'ROBO-Аналитика',dataType:'text',defaultType:'score',defaultWeight:0,operator:'Содержит',threshold:''}
+  roboComment:{label:'Комментарий ROBO-Аналитики',group:'ROBO-Аналитика',dataType:'text',defaultType:'score',defaultWeight:0,operator:'Любое',threshold:''}
 };
 const solutionKnownCardFields=Object.keys(solutionFieldMeta);
 let criteriaProfiles=[];
@@ -893,18 +893,44 @@ function criterionOptionValues(field){
 function thresholdParts(v){
   return String(v||'').split('|').map(x=>x.trim()).filter(Boolean);
 }
+function htmlEscape(s){
+  return String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#39;");
+}
+function toggleCriteriaMultiValue(i,value,checked){
+  if(!criteriaList[i])return;
+  const parts=new Set(thresholdParts(criteriaList[i].threshold));
+  if(checked)parts.add(String(value)); else parts.delete(String(value));
+  criteriaList[i].threshold=[...parts].join('|');
+  renderCriteriaAdmin();
+}
+function setCriteriaMultiAll(i,mode){
+  if(!criteriaList[i])return;
+  criteriaList[i].threshold=mode==='all'?criterionOptionValues(criteriaList[i].field_name).join('|'):'';
+  renderCriteriaAdmin();
+}
 function thresholdEditorHtml(c,realIndex){
   const meta=solutionFieldByName(c.field_name);
   if(meta.dataType==='boolean'){
     return `<select class="criteriaThreshold" data-i="${realIndex}" onchange="collectCriteriaAdmin()"><option value="Да" ${thresholdValueToUi(c)==='Да'?'selected':''}>Да</option><option value="Нет" ${thresholdValueToUi(c)==='Нет'?'selected':''}>Нет</option></select>`;
   }
   if(meta.dataType==='multi_enum'){
+    const values=criterionOptionValues(c.field_name);
     const selected=new Set(thresholdParts(c.threshold));
-    const opts=criterionOptionValues(c.field_name).map(v=>`<option value="${String(v).replaceAll('"','&quot;')}" ${selected.has(String(v))?'selected':''}>${v}</option>`).join('');
-    return `<select multiple class="criteriaThreshold criteriaThresholdMulti" data-i="${realIndex}" onchange="collectCriteriaAdmin()">${opts}</select><div class="muted">Можно выбрать несколько значений</div>`;
+    const selectedText=selected.size?`Выбрано: ${selected.size}`:'Не выбрано';
+    const list=values.map(v=>{
+      const safe=htmlEscape(v);
+      return `<label class="multiCheckItem"><input type="checkbox" ${selected.has(String(v))?'checked':''} onchange="toggleCriteriaMultiValue(${realIndex},'${safe}',this.checked)"> <span>${safe}</span></label>`;
+    }).join('');
+    return `<div class="criteriaMultiBox" data-i="${realIndex}">
+      <div class="criteriaMultiHead"><b>${selectedText}</b><span>Любое из выбранных</span></div>
+      <div class="criteriaMultiActions"><button type="button" onclick="setCriteriaMultiAll(${realIndex},'all')">Выбрать все</button><button type="button" onclick="setCriteriaMultiAll(${realIndex},'none')">Снять все</button></div>
+      <div class="criteriaMultiList">${list||'<span class="muted">Нет значений в справочнике</span>'}</div>
+      <input type="hidden" class="criteriaThreshold" data-i="${realIndex}" value="${htmlEscape(c.threshold??'')}">
+    </div>`;
   }
-  return `<input class="criteriaThreshold" data-i="${realIndex}" value="${String(c.threshold??'').replaceAll('"','&quot;')}" oninput="collectCriteriaAdmin()">`;
+  return `<input class="criteriaThreshold" data-i="${realIndex}" value="${htmlEscape(c.threshold??'')}" oninput="collectCriteriaAdmin()">`;
 }
+
 function defaultParkingCriteria(){
   const fields=['wetCleaning','objParking','roboRating','productivity','cleaningWidth','height','cleanWater_dirtyWater','dock3in1','warningBeacon','safetyProjection','freeParkingSpotAlgorithm'];
   return fields.map((f,i)=>{
@@ -1001,7 +1027,7 @@ function renderCriteriaAdmin(){
   body.innerHTML=rows.map((c,i)=>{
     const realIndex=criteriaList.indexOf(c);
     const meta=solutionFieldByName(c.field_name);
-    const ops=['=','≠','>','<','≥','≤','Да','Нет','Содержит','Не содержит'];
+    const ops=['=','≠','>','<','≥','≤','Да','Нет','Любое','Все','Содержит','Не содержит'];
     const isFilter=c.criterion_type==='filter';
     const thresholdEditor=thresholdEditorHtml(c,realIndex);
     return `<tr class="${isFilter?'criteriaFilterRow':''}">
@@ -1010,7 +1036,7 @@ function renderCriteriaAdmin(){
       <td><div class="fieldHuman">${meta.label}</div><code>${c.field_name}</code><div class="muted">${dataTypeLabel(meta.dataType)}</div></td>
       <td><select class="criteriaType" data-i="${realIndex}" onchange="onCriterionTypeChange(${realIndex},this.value)"><option value="filter" ${isFilter?'selected':''}>Фильтр</option><option value="score" ${!isFilter?'selected':''}>Балльный</option></select></td>
       <td><div class="weightInputWrap"><input class="criteriaWeight" data-i="${realIndex}" type="number" min="0" max="100" step="1" value="${isFilter?0:Number(c.weight||0)}" ${isFilter?'disabled':''} oninput="collectCriteriaAdmin();renderWeightSummary()"><span>%</span></div></td>
-      <td><select class="criteriaOperator" data-i="${realIndex}" onchange="collectCriteriaAdmin()">${ops.map(op=>`<option value="${op}" ${String(c.operator||'=')===op?'selected':''}>${op}</option>`).join('')}</select></td>
+      <td><select class="criteriaOperator" data-i="${realIndex}" ${meta.dataType==='multi_enum'?'disabled':''} onchange="collectCriteriaAdmin()">${ops.map(op=>`<option value="${op}" ${(meta.dataType==='multi_enum'?'Любое':String(c.operator||'='))===op?'selected':''}>${op}</option>`).join('')}</select></td>
       <td>${thresholdEditor}</td>
       <td><button class="dangerBtn" onclick="removeCriterion(${realIndex})">Удалить</button></td>
     </tr>`;
@@ -1033,6 +1059,7 @@ function collectCriteriaAdmin(){
     if(criteriaList[i])criteriaList[i].weight=criteriaList[i].criterion_type==='filter'?0:Number(el.value||0);
   });
   document.querySelectorAll('.criteriaOperator').forEach(el=>{const i=+el.dataset.i;if(criteriaList[i])criteriaList[i].operator=el.value});
+  criteriaList.forEach(c=>{if(solutionFieldByName(c.field_name).dataType==='multi_enum')c.operator='Любое'});
   document.querySelectorAll('.criteriaThreshold').forEach(el=>{
     const i=+el.dataset.i;
     if(criteriaList[i]){
@@ -1125,7 +1152,7 @@ function addCriterion(){
   const meta=solutionFieldByName(field);
   if(!meta.field){alert('Критерий можно добавить только из полей карточки робота');return}
   if(criteriaList.some(c=>c.field_name===field)){alert('Такой критерий уже есть в профиле');return}
-  criteriaList.push({id:null,profile_id:criteriaActiveProfileId,field_name:field,display_name:meta.label,criterion_type:meta.defaultType,weight:meta.defaultWeight,operator:meta.operator,threshold:meta.threshold,enabled:true,sort_order:criteriaList.length+1});
+  criteriaList.push({id:null,profile_id:criteriaActiveProfileId,field_name:field,display_name:meta.label,criterion_type:meta.defaultType,weight:meta.defaultWeight,operator:meta.dataType==='multi_enum'?'Любое':meta.operator,threshold:meta.threshold,enabled:true,sort_order:criteriaList.length+1});
   renderCriteriaAdmin();
 }
 function removeCriterion(i){
