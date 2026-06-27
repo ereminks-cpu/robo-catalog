@@ -23,7 +23,7 @@
     <div>
       <div class="solutionEyebrow">ROBO Solution Advisor</div>
       <h2>Подбор решения</h2>
-      <p>Мастер предварительного подбора роботизированного решения под конкретный объект. В v10.40.2 подключен только интерфейс, расчет будет включен на следующем этапе.</p>
+      <p>Мастер предварительного подбора роботизированного решения под конкретный объект. В v10.40.4 подключен только интерфейс, расчет будет включен на следующем этапе.</p>
     </div>
     <div class="solutionProfileCard">
       <span>Используемый профиль</span>
@@ -38,6 +38,8 @@
     <button data-solution-step="3">3. Инфраструктура</button>
     <button data-solution-step="4">4. Экспертное заключение</button>
   </div>
+
+  <div id="solutionLiveSummary" class="solutionLiveSummary"></div>
 
   <div class="solutionWizard">
     <section class="solutionStep active" data-step="1">
@@ -57,8 +59,8 @@
       <h3>Параметры паркинга</h3>
       <p class="muted">Сначала указываем базовую геометрию объекта. Количество уровней ограничено диапазоном от 1 до 5.</p>
       <div class="solutionFields">
-        <label><span>Общая площадь паркинга, м²</span><input id="solutionArea" type="number" min="0" placeholder="Например: 12500"></label>
-        <label><span>Количество уровней</span><input id="solutionLevels" type="number" min="1" max="5" value="1" oninput="solutionRenderLevels()"></label>
+        <label><span>Общая площадь паркинга, м²</span><input id="solutionArea" type="text" inputmode="numeric" placeholder="Например: 15 000" oninput="solutionFormatInput(this);solutionUpdateSummary()"></label>
+        <label><span>Количество уровней</span><input id="solutionLevels" type="number" min="1" max="5" value="1" oninput="solutionRenderLevels();solutionUpdateSummary()"></label>
       </div>
       <div id="solutionLevelsBox" class="solutionLevelsBox"></div>
       <div class="solutionHint">Если известны только машиноместа, используем быстрый ориентир: 1 машиноместо = 15 м².</div>
@@ -68,16 +70,23 @@
     <section class="solutionStep" data-step="3">
       <h3>Данные объекта и инфраструктура</h3>
       <div class="solutionFields">
-        <label><span>Наименование объекта</span><input id="solutionObjectName" placeholder="Например: Паркинг ЖК Север"></label>
-        <label><span>Адрес</span><input id="solutionObjectAddress" placeholder="Город, улица, объект"></label>
+        <label><span>Наименование объекта</span><input id="solutionObjectName" placeholder="Например: Паркинг ЖК Север" oninput="solutionUpdateSummary()"></label>
+        <label><span>Адрес</span><input id="solutionObjectAddress" placeholder="Город, улица, объект" oninput="solutionUpdateSummary()"></label>
       </div>
       <h4 class="solutionSubhead">Инфраструктура</h4>
       <p class="muted">Эти параметры будут использоваться движком подбора при оценке станции и автономности.</p>
-      <div class="solutionChecks">
-        <label><input type="checkbox" id="solutionStationPlace"> Есть место под станцию</label>
-        <label><input type="checkbox" id="solutionWater"> Есть вода</label>
-        <label><input type="checkbox" id="solutionDrainage"> Есть канализация</label>
-        <label><input type="checkbox" id="solutionInternet"> Есть интернет</label>
+      <div class="solutionInfraGrid">
+        <label><span>Место под станцию</span><select id="solutionStationPlace" onchange="solutionUpdateSummary()"><option value="">Не выбрано</option><option value="yes">Есть</option><option value="no">Нет</option></select></label>
+        <label><span>Вода</span><select id="solutionWater" onchange="solutionUpdateSummary()"><option value="">Не выбрано</option><option value="yes">Есть</option><option value="no">Нет</option></select></label>
+        <label><span>Канализация</span><select id="solutionDrainage" onchange="solutionUpdateSummary()"><option value="">Не выбрано</option><option value="yes">Есть</option><option value="no">Нет</option></select></label>
+        <label><span>Интернет</span><select id="solutionInternet" onchange="solutionUpdateSummary()"><option value="">Не выбрано</option><option value="yes">Есть</option><option value="no">Нет</option></select></label>
+      </div>
+
+      <h4 class="solutionSubhead">Периодичность уборки</h4>
+      <div class="solutionFrequency">
+        <label><input type="radio" name="solutionFrequency" value="day" onchange="solutionUpdateSummary()"> Только день</label>
+        <label><input type="radio" name="solutionFrequency" value="night" onchange="solutionUpdateSummary()"> Только ночь</label>
+        <label><input type="radio" name="solutionFrequency" value="day_night" onchange="solutionUpdateSummary()"> День + ночь</label>
       </div>
       <div class="solutionNav"><button type="button" class="secondary" onclick="solutionGoStep(2)">Назад</button><button type="button" onclick="solutionMockResults()">Показать пример заключения</button></div>
     </section>
@@ -86,7 +95,7 @@
       <div class="solutionResultHeader">
         <div>
           <h3>ROBO Recommendation</h3>
-          <p class="muted">Демонстрационный экран результата. Расчет по реальным критериям будет подключен в v10.40.2.</p>
+          <p class="muted">Демонстрационный экран результата. Расчет по реальным критериям будет подключен в v10.40.4.</p>
         </div>
         <div class="recommendationBadge">UI Preview</div>
       </div>
@@ -245,7 +254,7 @@
 
 </div></div>
 
-<!-- ROBO Catalog v10.40.2 PIM cloud -->
+<!-- ROBO Catalog v10.40.4 PIM cloud -->
 <script>
 const SUPABASE_URL="https://pwnpxxhrhxrtcxmcofcc.supabase.co", SUPABASE_ANON_KEY="sb_publishable_LIiJr0mPfi8iq16mVknHew_-pO0AYNS";
 const sbClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
@@ -331,10 +340,84 @@ function setMainView(view){
 function showCatalogView(){setMainView('catalog')}
 function showDashboardView(){setMainView('dashboard');renderDashboard()}
 function showSolutionView(){setMainView('solution');solutionGoStep(1)}
+function solutionParseNumber(v){return Number(String(v||'').replace(/\s/g,'').replace(',','.'))||0}
+function solutionFormatNumber(n){
+  const num=Number(n||0);
+  if(!num)return '';
+  return Math.round(num).toLocaleString('ru-RU').replace(/\u00a0/g,' ');
+}
+function solutionFormatInput(el){
+  const pos=el.selectionStart;
+  const raw=String(el.value||'').replace(/\D/g,'');
+  el.value=raw?solutionFormatNumber(raw):'';
+}
+function solutionYesNoText(v){return v==='yes'?'Есть':(v==='no'?'Нет':'Не выбрано')}
+function solutionSyncParkingLevel(i,source){
+  if(source==='spots'){
+    const spots=solutionParseNumber(document.getElementById(`solutionLevelSpots_${i}`)?.value);
+    const a=document.getElementById(`solutionLevelSpotsArea_${i}`);
+    if(a)a.value=spots?solutionFormatNumber(spots*15):'';
+  }else{
+    const area=solutionParseNumber(document.getElementById(`solutionLevelSpotsArea_${i}`)?.value);
+    const s=document.getElementById(`solutionLevelSpots_${i}`);
+    if(s)s.value=area?solutionFormatNumber(Math.round(area/15)):'';
+  }
+  solutionUpdateSummary();
+}
+function solutionCollectData(){
+  const levels=Math.min(5,Math.max(1,parseInt(document.getElementById('solutionLevels')?.value||'1',10)||1));
+  const levelRows=[];
+  for(let i=1;i<=levels;i++){
+    levelRows.push({
+      i,
+      area:solutionParseNumber(document.getElementById(`solutionLevelArea_${i}`)?.value),
+      spots:solutionParseNumber(document.getElementById(`solutionLevelSpots_${i}`)?.value),
+      spotsArea:solutionParseNumber(document.getElementById(`solutionLevelSpotsArea_${i}`)?.value)
+    });
+  }
+  const freqValue=document.querySelector('input[name="solutionFrequency"]:checked')?.value||'';
+  const freqMap={day:'Только день',night:'Только ночь',day_night:'День + ночь'};
+  return {
+    name:document.getElementById('solutionObjectName')?.value||'Подземный паркинг',
+    address:document.getElementById('solutionObjectAddress')?.value||'—',
+    totalArea:solutionParseNumber(document.getElementById('solutionArea')?.value),
+    levels,
+    levelRows,
+    infra:{
+      station:document.getElementById('solutionStationPlace')?.value||'',
+      water:document.getElementById('solutionWater')?.value||'',
+      drainage:document.getElementById('solutionDrainage')?.value||'',
+      internet:document.getElementById('solutionInternet')?.value||''
+    },
+    frequency:freqMap[freqValue]||'Не выбрано'
+  }
+}
+function solutionUpdateSummary(){
+  const el=document.getElementById('solutionLiveSummary');
+  if(!el)return;
+  const d=solutionCollectData();
+  const spots=d.levelRows.reduce((s,x)=>s+x.spots,0);
+  const spotsArea=d.levelRows.reduce((s,x)=>s+(x.spotsArea||x.spots*15),0);
+  const driveArea=Math.max(0,(d.totalArea||d.levelRows.reduce((s,x)=>s+x.area,0))-spotsArea);
+  const infra=`Станция: ${solutionYesNoText(d.infra.station)} · Вода: ${solutionYesNoText(d.infra.water)} · Канализация: ${solutionYesNoText(d.infra.drainage)} · Интернет: ${solutionYesNoText(d.infra.internet)}`;
+  const levels=d.levelRows.map(x=>`<span>Ур. ${x.i}: ${x.area?solutionFormatNumber(x.area)+' м²':'—'} · ${x.spots?solutionFormatNumber(x.spots)+' м/м':'—'} · ${x.spotsArea?solutionFormatNumber(x.spotsArea)+' м² м/м':'—'}</span>`).join('');
+  el.innerHTML=`<div class="summaryTitle"><b>Сводка объекта</b><small>${d.name}</small></div>
+  <div class="summaryMetrics">
+    <div><span>Общая площадь</span><b>${d.totalArea?solutionFormatNumber(d.totalArea)+' м²':'—'}</b></div>
+    <div><span>Уровней</span><b>${d.levels}</b></div>
+    <div><span>Машиномест</span><b>${spots?solutionFormatNumber(spots):'—'}</b></div>
+    <div><span>Площадь м/м</span><b>${spotsArea?solutionFormatNumber(spotsArea)+' м²':'—'}</b></div>
+    <div><span>Проезды/прочее</span><b>${driveArea?solutionFormatNumber(driveArea)+' м²':'—'}</b></div>
+    <div><span>Периодичность</span><b>${d.frequency}</b></div>
+  </div>
+  <div class="summaryInfra">${infra}</div>
+  <div class="summaryLevels">${levels}</div>`;
+}
 function solutionGoStep(step){
   document.querySelectorAll('.solutionStepper button').forEach(b=>b.classList.toggle('active',Number(b.dataset.solutionStep)===step));
   document.querySelectorAll('.solutionStep').forEach(s=>s.classList.toggle('active',Number(s.dataset.step)===step));
   if(step===2)solutionRenderLevels();
+  solutionUpdateSummary();
 }
 function solutionRenderLevels(){
   const input=document.getElementById('solutionLevels');
@@ -350,24 +433,24 @@ function solutionRenderLevels(){
     const spotsVal=document.getElementById(`solutionLevelSpots_${i}`)?.value||'';
     html+=`<div class="solutionLevelCard">
       <b>Уровень ${i}</b>
-      <label><span>Площадь уровня, м²</span><input id="solutionLevelArea_${i}" type="number" min="0" value="${areaVal}" placeholder="Например: 4200"></label>
-      <label><span>Кол-во машиномест</span><input id="solutionLevelSpots_${i}" type="number" min="0" value="${spotsVal}" placeholder="Например: 280"></label>
+      <label><span>Площадь уровня, м²</span><input id="solutionLevelArea_${i}" type="text" inputmode="numeric" value="${areaVal}" placeholder="Например: 7 500" oninput="solutionFormatInput(this);solutionUpdateSummary()"></label>
+      <label><span>Кол-во машиномест</span><input id="solutionLevelSpots_${i}" type="text" inputmode="numeric" value="${spotsVal}" placeholder="Например: 250" oninput="solutionFormatInput(this);solutionSyncParkingLevel(${i},'spots')"></label>
+      <label><span>Площадь машиномест, м²</span><input id="solutionLevelSpotsArea_${i}" type="text" inputmode="numeric" value="${document.getElementById(`solutionLevelSpotsArea_${i}`)?.value||''}" placeholder="Авто: м/м × 15" oninput="solutionFormatInput(this);solutionSyncParkingLevel(${i},'area')"></label>
     </div>`;
   }
   box.innerHTML=html;
+  solutionUpdateSummary();
 }
 function solutionMockResults(){
-  const name=document.getElementById('solutionObjectName')?.value||'Подземный паркинг';
-  const area=document.getElementById('solutionArea')?.value||'—';
-  const levels=document.getElementById('solutionLevels')?.value||'—';
+  const d=solutionCollectData();
   const infra=[
-    ['solutionStationPlace','станция'],
-    ['solutionWater','вода'],
-    ['solutionDrainage','канализация'],
-    ['solutionInternet','интернет']
-  ].filter(x=>document.getElementById(x[0])?.checked).map(x=>x[1]).join(', ')||'не указана';
+    ['station','станция'],
+    ['water','вода'],
+    ['drainage','канализация'],
+    ['internet','интернет']
+  ].map(x=>d.infra[x[0]]==='yes'?`✓ ${x[1]}`:(d.infra[x[0]]==='no'?`— ${x[1]}`:null)).filter(Boolean).join(', ')||'не указана';
   const el=document.getElementById('solutionSummary');
-  if(el)el.innerHTML=`<div><span>Объект</span><b>${name}</b></div><div><span>Площадь</span><b>${area==='—'?'—':area+' м²'}</b></div><div><span>Уровней</span><b>${levels}</b></div><div><span>Инфраструктура</span><b>${infra}</b></div>`;
+  if(el)el.innerHTML=`<div><span>Объект</span><b>${d.name}</b></div><div><span>Площадь</span><b>${d.totalArea?solutionFormatNumber(d.totalArea)+' м²':'—'}</b></div><div><span>Уровней</span><b>${d.levels}</b></div><div><span>Инфраструктура</span><b>${infra}</b></div><div><span>Периодичность</span><b>${d.frequency}</b></div>`;
   solutionGoStep(4);
 }
 function groupCount(arr,fn){const m={};arr.forEach(x=>{const k=fn(x)||'Не указано';m[k]=(m[k]||0)+1});return Object.entries(m).sort((a,b)=>b[1]-a[1])}

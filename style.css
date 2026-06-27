@@ -1030,3 +1030,30 @@ h3{font-size:16px;margin:18px 0 8px}
 .solutionLevelCard input{width:100%;padding:10px;border:1px solid #d0d5dd;border-radius:10px;background:#fff}
 .solutionSubhead{margin:18px 0 8px;font-size:18px;color:#0f172a}
 @media(max-width:900px){.solutionLevelsBox{grid-template-columns:1fr}}
+
+/* v10.40.3 solution infrastructure/frequency */
+.solutionInfraGrid{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:12px;max-width:900px}
+.solutionInfraGrid label{display:block;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:12px}
+.solutionInfraGrid label span{display:block;color:#667085;font-weight:800;font-size:13px;margin-bottom:6px}
+.solutionInfraGrid select{width:100%;padding:10px;border:1px solid #d0d5dd;border-radius:10px;background:#fff}
+.solutionFrequency{display:grid;grid-template-columns:repeat(3,minmax(170px,1fr));gap:10px;max-width:900px}
+.solutionFrequency label{display:flex;gap:10px;align-items:center;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:12px;font-weight:800}
+.solutionFrequency input{width:18px;height:18px}
+.solutionSummary{grid-template-columns:repeat(5,1fr)}
+@media(max-width:900px){
+  .solutionInfraGrid,.solutionFrequency,.solutionSummary{grid-template-columns:1fr}
+}
+
+/* v10.40.4 live summary and parking calculations */
+.solutionLiveSummary{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:14px;margin:0 0 14px;box-shadow:0 8px 22px rgba(15,23,42,.05)}
+.summaryTitle{display:flex;justify-content:space-between;gap:10px;align-items:baseline;margin-bottom:10px}
+.summaryTitle b{font-size:18px;color:#0f172a}
+.summaryTitle small{color:#667085;font-weight:700}
+.summaryMetrics{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.summaryMetrics div{background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:9px}
+.summaryMetrics span{display:block;color:#667085;font-size:12px;font-weight:800}
+.summaryMetrics b{display:block;color:#0f172a;margin-top:3px}
+.summaryInfra{margin-top:10px;color:#475569;font-weight:700}
+.summaryLevels{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.summaryLevels span{background:#ecfdf5;color:#0f766e;border-radius:999px;padding:5px 8px;font-size:12px;font-weight:800}
+@media(max-width:1100px){.summaryMetrics{grid-template-columns:repeat(2,1fr)}}
